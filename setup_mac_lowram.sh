@@ -105,20 +105,13 @@ else
     echo "      (This may take 10-20 minutes depending on internet speed)"
     echo ""
 
-    # Use mlx_lm to convert and quantize
-    python3 -c "
-from mlx_lm import convert
-
-print('Starting quantization...')
-convert.convert(
-    hf_path='fdtn-ai/Foundation-Sec-8B',
-    mlx_path='$QUANTIZED_MODEL_PATH',
-    quantize=True,
-    q_bits=4,
-    q_group_size=64
-)
-print('Quantization complete!')
-"
+    # Use mlx_lm CLI to convert and quantize
+    python3 -m mlx_lm.convert \
+        --hf-path fdtn-ai/Foundation-Sec-8B \
+        --mlx-path "$QUANTIZED_MODEL_PATH" \
+        -q \
+        --q-bits 4 \
+        --q-group-size 64
 
     if [ $? -ne 0 ]; then
         echo ""
