@@ -1,0 +1,247 @@
+# v1.0 — Cisco NX-OS (Nexus 9000 / NX-OS switch mode)
+# Domains: Switching, Routing, L3 Services, Overlay / EVPN, Security, Management, QoS, System, HA
+
+# -------------------------
+# SWITCHING / L2 FEATURES
+# -------------------------
+- label: SW_L2_VLAN
+  domain: Switching
+  presence:
+    config_regex:
+      - "^vlan\\s+\\d+\\b"
+    show_cmds: ["show vlan", "show vlan brief"]
+  docs: { anchors: [] }
+
+- label: SW_L2_VPC
+  domain: Switching
+  presence:
+    config_regex:
+      - "^interface vpc\\b"
+      - "^vpc domain\\b"
+    show_cmds: ["show vpc", "show vpc brief"]
+  docs: { anchors: [] }
+
+- label: SW_L2_VLAN_TRUNK
+  domain: Switching
+  presence:
+    config_regex:
+      - "switchport mode trunk"
+      - "switchport trunk allowed vlan"
+    show_cmds: ["show interface trunk", "show interface switchport"]
+  docs: { anchors: [] }
+
+- label: SW_L2_ETHERCHANNEL
+  domain: Switching
+  presence:
+    config_regex:
+      - "^interface port-channel\\d+"
+      - "channel-group \\d+ mode (active|on|passive)"
+    show_cmds: ["show port-channel summary", "show interface port-channel"]
+  docs: { anchors: [] }
+
+- label: SW_L2_VLAN_VDC
+  domain: Switching
+  presence:
+    config_regex:
+      - "^vdc\\b"
+      - "^allocate interface\\b"
+    show_cmds: ["show vdc", "show vdc membership"]
+  docs: { anchors: [] }
+
+# -------------------------
+# L3 / ROUTING / OVERLAY
+# -------------------------
+- label: RTE_STATIC
+  domain: Routing
+  presence:
+    config_regex:
+      - "^ip route\\b"
+      - "^ipv6 route\\b"
+    show_cmds: ["show ip route static", "show ipv6 route"]
+  docs: { anchors: [] }
+
+- label: RTE_OSPF
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router ospf\\b"
+      - "network \\S+ area \\d+"
+    show_cmds: ["show ip ospf neighbor", "show ip ospf interface"]
+  docs: { anchors: [] }
+
+- label: RTE_BGP
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router bgp\\b"
+      - "address-family"
+    show_cmds: ["show bgp summary", "show bgp ipv4 unicast"]
+  docs: { anchors: [] }
+
+- label: OVERLAY_VXLAN_EVPN
+  domain: Overlay/EVPN
+  presence:
+    config_regex:
+      - "feature nv overlay"
+      - "evpn"
+      - "interface nve"
+    show_cmds: ["show nve peers", "show evpn route"]
+  docs: { anchors: [] }
+
+- label: OVERLAY_VXLAN_MULTI_HOMING
+  domain: Overlay/EVPN
+  presence:
+    config_regex:
+      - "vpc peer-link"
+      - "vpc domain"
+    show_cmds: ["show vpc", "show nve peers"]
+  docs: { anchors: [] }
+
+# -------------------------
+# SECURITY / CONTROL PLANE PROTECTION
+# -------------------------
+- label: SEC_ACL_CONTROL_PLANE
+  domain: Security
+  presence:
+    config_regex:
+      - "ip access-list"
+      - "control-plane"
+      - "class-map type control-plane"
+    show_cmds: ["show access-lists", "show control-plane"]
+  docs: { anchors: [] }
+
+- label: SEC_DHCP_SNOOP
+  domain: Security
+  presence:
+    config_regex:
+      - "feature dhcp_snooping"
+      - "ip dhcp snooping"
+    show_cmds: ["show dhcp snooping binding", "show dhcp snooping"]
+  docs: { anchors: [] }
+
+- label: SEC_UDLD
+  domain: Security
+  presence:
+    config_regex:
+      - "feature udld"
+      - "udld enable"
+    show_cmds: ["show udld", "show udld interface"]
+  docs: { anchors: [] }
+
+- label: SEC_DHCP_RELAY
+  domain: Security
+  presence:
+    config_regex:
+      - "ip helper-address"
+      - "ipv6 dhcp relay"
+    show_cmds: ["show ip dhcp relay", "show run interface | inc helper"]
+  docs: { anchors: [] }
+
+- label: SEC_DNS_SRV
+  domain: Security
+  presence:
+    config_regex:
+      - "feature dns"
+      - "ip name-server"
+    show_cmds: ["show hosts", "show dns server"]
+  docs: { anchors: [] }
+
+# -------------------------
+# QOS / TRAFFIC POLICING
+# -------------------------
+- label: QOS_POLICING
+  domain: QoS
+  presence:
+    config_regex:
+      - "policy-map"
+      - "class-map"
+      - "service-policy inbound|outbound"
+    show_cmds: ["show policy-map interface", "show qos counters"]
+  docs: { anchors: [] }
+
+- label: QOS_MARKING
+  domain: QoS
+  presence:
+    config_regex:
+      - "mls qos"
+      - "qos trust"
+    show_cmds: ["show qos interface", "show mls qos"]
+  docs: { anchors: [] }
+
+# -------------------------
+# MANAGEMENT / TELEMETRY / SYSTEM
+# -------------------------
+- label: MGMT_SNMP
+  domain: Management
+  presence:
+    config_regex:
+      - "feature snmp"
+      - "snmp-server"
+    show_cmds: ["show snmp user", "show snmp community"]
+  docs: { anchors: [] }
+
+- label: MGMT_SYSLOG
+  domain: Management
+  presence:
+    config_regex:
+      - "logging host"
+      - "logging buffered"
+    show_cmds: ["show logging", "show logging onboard"]
+  docs: { anchors: [] }
+
+- label: MGMT_NTP
+  domain: Management
+  presence:
+    config_regex:
+      - "ntp server"
+      - "clock timezone"
+    show_cmds: ["show ntp associations", "show clock"]
+  docs: { anchors: [] }
+
+- label: MGMT_TELNET_SSH
+  domain: Management
+  presence:
+    config_regex:
+      - "feature telnet"
+      - "feature ssh"
+      - "ssh"
+      - "telnet"
+    show_cmds: ["show ssh", "show telnet"]
+  docs: { anchors: [] }
+
+- label: MGMT_ISSU_ONLINE_UPGRADE
+  domain: Management
+  presence:
+    config_regex:
+      - "issu"
+      - "install nxos"
+    show_cmds: ["show install log", "show version"]
+  docs: { anchors: [] }
+
+- label: MGMT_CFG_SYNC
+  domain: Management
+  presence:
+    config_regex:
+      - "vdc sync"
+      - "fabric fex-synchronization"
+    show_cmds: ["show vdc sync", "show fabric fex-synchronization"]
+  docs: { anchors: [] }
+
+- label: SYSTEM_RELOAD_RECOVERY
+  domain: System
+  presence:
+    config_regex:
+      - "boot nxos"
+      - "reload prompt"
+    show_cmds: ["show version", "show boot"]
+  docs: { anchors: [] }
+
+- label: SYSTEM_LICENSING
+  domain: System
+  presence:
+    config_regex:
+      - "license"
+      - "feature license"
+    show_cmds: ["show license usage", "show license all"]
+  docs: { anchors: [] }
+

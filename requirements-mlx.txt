@@ -1,0 +1,44 @@
+# =============================================================================
+# CVE_EVAL_V2 - Apple Silicon MLX Requirements
+# =============================================================================
+# Version: 3.2 | Last Updated: December 16, 2025
+#
+# REQUIREMENTS:
+# -------------
+# - Apple Silicon Mac (M1, M2, M3, M4 - any variant)
+# - macOS 13.0+ (Ventura or later)
+# - 32GB RAM recommended (16GB minimum)
+# - Python 3.10+ (ARM64 native, NOT x86 via Rosetta)
+#
+# VERIFICATION:
+# -------------
+# Run: python -c "import platform; print(platform.machine())"
+# Should output: arm64 (NOT x86_64)
+#
+# If you see x86_64, reinstall Python natively for ARM64:
+#   brew install python@3.11
+#
+# INSTALLATION:
+# -------------
+# 1. Install base requirements first: pip install -r requirements.txt
+# 2. Then install MLX: pip install -r requirements-mlx.txt
+#
+# WHY MLX?
+# --------
+# MLX is Apple's machine learning framework optimized for Apple Silicon.
+# Benefits:
+# - 2-3x faster inference than PyTorch on Apple Silicon
+# - Unified memory architecture (no GPU memory limits)
+# - Native Metal acceleration
+# - Lower power consumption
+#
+# =============================================================================
+
+# MLX Core Framework
+mlx>=0.5.0                    # Apple's ML framework for Apple Silicon
+
+# MLX Language Model Support
+mlx-lm>=0.10.0                # LLM inference with MLX (LoRA support)
+
+# NOTE: mlx-metal is included with mlx on macOS
+# These packages only work on Apple Silicon Macs

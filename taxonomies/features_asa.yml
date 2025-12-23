@@ -1,0 +1,422 @@
+# v1.0 — Cisco Secure Firewall ASA (CLI)
+# Domains: Firewalling, VPN, Routing, NAT, Objects/ACL, Inspection/MPF, Security Services, HA/Clustering/Contexts,
+#          Management/Telemetry, Interfaces/Bridge, QoS, System.
+# Notes: Anchors/URLs can be filled with specific chapter links if you want traceability per feature.
+
+# -------------------------
+# FIREWALLING / ACCESS-CONTROL
+# -------------------------
+- label: FW_AccessGroup_ACL
+  domain: Firewalling
+  presence:
+    config_regex:
+      - "^access-list\\s+\\S+\\s+extended\\b"
+      - "^access-group\\s+\\S+\\s+in\\s+interface\\s+\\S+"
+    show_cmds: ["show access-list", "show run access-group"]
+  docs: { anchors: [] }
+
+- label: FW_Object_Groups
+  domain: Firewalling
+  presence:
+    config_regex:
+      - "^object-group\\s+(network|service|protocol)\\s+\\S+"
+      - "^object\\s+(network|service)\\s+\\S+"
+    show_cmds: ["show run object-group", "show run object"]
+  docs: { anchors: [] }
+
+- label: FW_Time_Range
+  domain: Firewalling
+  presence:
+    config_regex: ["^time-range\\s+\\S+"]
+    show_cmds: ["show run time-range"]
+  docs: { anchors: [] }
+
+- label: FW_TCP_Normalization
+  domain: Firewalling
+  presence:
+    config_regex:
+      - "^tcp-map\\s+\\S+"
+      - "^policy-map\\s+\\S+"
+      - "^class-map\\s+\\S+"
+      - "^service-policy\\s+\\S+\\s+global"
+    show_cmds: ["show run tcp-map", "show service-policy"]
+  docs: { anchors: [] }
+
+- label: FW_Connection_Policing_Limits
+  domain: Firewalling
+  presence:
+    config_regex:
+      - "\\bset connection\\b"
+      - "\\bper-user-connection\\b"
+    show_cmds: ["show service-policy", "show conn count"]
+  docs: { anchors: [] }
+
+- label: FW_SameSecurity_IntraInterface
+  domain: Firewalling
+  presence:
+    config_regex: ["^same-security-traffic\\s+intra-interface\\b"]
+    show_cmds: ["show run all | inc same-security-traffic"]
+  docs: { anchors: [] }
+
+- label: FW_SameSecurity_InterInterface
+  domain: Firewalling
+  presence:
+    config_regex: ["^same-security-traffic\\s+permit inter-interface\\b"]
+    show_cmds: ["show run all | inc same-security-traffic"]
+  docs: { anchors: [] }
+
+- label: FW_uRPF
+  domain: Firewalling
+  presence:
+    config_regex: ["^ip verify reverse-path\\b"]
+    show_cmds: ["show run interface", "show asp drop | inc rpf"]
+  docs: { anchors: [] }
+
+# -------------------------
+# NAT
+# -------------------------
+- label: NAT_Object_AutoNAT
+  domain: NAT
+  presence:
+    config_regex:
+      - "^object network\\s+\\S+"
+      - "^\\s*nat\\s*\\(.*\\)\\s+(dynamic|static)\\b"
+    show_cmds: ["show nat detail", "show xlate"]
+  docs: { anchors: [] }
+
+- label: NAT_Manual_TwiceNAT
+  domain: NAT
+  presence:
+    config_regex:
+      - "^nat\\s*\\(.*\\)\\s+source\\s+static\\b"
+      - "^nat\\s*\\(.*\\)\\s+source\\s+dynamic\\b"
+    show_cmds: ["show nat detail", "show xlate"]
+  docs: { anchors: [] }
+
+- label: NAT_PolicyNAT
+  domain: NAT
+  presence:
+    config_regex:
+      - "^nat\\s*\\(.*\\)\\s+after-auto\\b"
+      - "^nat\\s*\\(.*\\)\\s+destination\\b"
+    show_cmds: ["show nat", "show xlate"]
+  docs: { anchors: [] }
+
+# -------------------------
+# INSPECTION / MPF
+# -------------------------
+- label: MPF_ClassMap
+  domain: Inspection/MPF
+  presence:
+    config_regex: ["^class-map\\s+(type\\s+inspect\\s+\\S+\\s+)?\\S+"]
+    show_cmds: ["show run class-map"]
+  docs: { anchors: [] }
+
+- label: MPF_PolicyMap
+  domain: Inspection/MPF
+  presence:
+    config_regex: ["^policy-map\\s+(type\\s+inspect\\s+\\S+\\s+)?\\S+"]
+    show_cmds: ["show run policy-map"]
+  docs: { anchors: [] }
+
+- label: MPF_ServicePolicy
+  domain: Inspection/MPF
+  presence:
+    config_regex: ["^service-policy\\s+\\S+\\s+(global|interface\\s+\\S+)"]
+    show_cmds: ["show service-policy"]
+  docs: { anchors: [] }
+
+- label: MPF_Protocol_Inspection
+  domain: Inspection/MPF
+  presence:
+    config_regex:
+      - "^inspect\\s+(dns|ftp|http|icmp|imap|ip-options|pptp|rtsp|sip|smtp|sqlnet|sunrpc|tftp|traceroute)"
+    show_cmds: ["show service-policy | inc Inspect", "show run policy-map"]
+  docs: { anchors: [] }
+
+- label: MPF_DNS_TCP_Inspection
+  domain: Inspection/MPF
+  presence:
+    config_regex:
+      - "^policy-map\\s+type\\s+inspect\\s+dns\\s+\\S+"
+      - "^\\s*parameters\\b"
+      - "^\\s*tcp-inspection\\b"
+    show_cmds: ["show run policy-map type inspect dns", "show service-policy"]
+  docs: { anchors: [] }
+
+# -------------------------
+# VPN
+# -------------------------
+- label: VPN_IKEv2_SiteToSite
+  domain: VPN
+  presence:
+    config_regex:
+      - "^crypto ikev2 policy\\b"
+      - "^crypto ikev2 enable\\b"
+      - "^tunnel-group\\s+\\S+\\s+type\\s+ipsec-l2l\\b"
+    show_cmds: ["show crypto ikev2 sa", "show crypto ipsec sa"]
+  docs: { anchors: [] }
+
+- label: VPN_IKEv1_SiteToSite
+  domain: VPN
+  presence:
+    config_regex:
+      - "^crypto ikev1 policy\\b"
+      - "^crypto ikev1 enable\\b"
+      - "^tunnel-group\\s+\\S+\\s+type\\s+ipsec-l2l\\b"
+    show_cmds: ["show crypto ikev1 sa", "show crypto ipsec sa"]
+  docs: { anchors: [] }
+
+- label: VPN_AnyConnect_SSL_RA
+  domain: VPN
+  presence:
+    config_regex:
+      - "^webvpn\\b"
+      - "^tunnel-group\\s+\\S+\\s+type\\s+remote-access\\b"
+      - "^group-policy\\s+\\S+\\s+internal\\b"
+      - "^anyconnect\\s+enable\\b"
+    show_cmds: ["show webvpn anyconnect", "show vpn-sessiondb anyconnect"]
+  docs: { anchors: [] }
+
+- label: VPN_Certificate_PKI
+  domain: VPN
+  presence:
+    config_regex:
+      - "^crypto ca trustpoint\\b"
+      - "^crypto ca enroll\\b"
+    show_cmds: ["show crypto ca trustpoints", "show crypto ca certificates"]
+  docs: { anchors: [] }
+
+# -------------------------
+# ROUTING
+# -------------------------
+- label: RTE_Static
+  domain: Routing
+  presence:
+    config_regex: ["^route\\s+\\S+\\s+\\d+\\.\\d+\\.\\d+\\.\\d+\\s+\\S+"]
+    show_cmds: ["show route"]
+  docs: { anchors: [] }
+
+- label: RTE_OSPFv2
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router ospf\\s+\\d+"
+      - "^\\s*network\\s+\\S+\\s+area\\s+\\S+"
+    show_cmds: ["show ospf neighbor", "show ospf route"]
+  docs: { anchors: [] }
+
+- label: RTE_OSPFv3
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router ospfv3\\s+\\d+"
+      - "^ipv6 ospf\\b"
+    show_cmds: ["show ospfv3 neighbor", "show ospfv3 route"]
+  docs: { anchors: [] }
+
+- label: RTE_RIP
+  domain: Routing
+  presence:
+    config_regex: ["^router rip\\b"]
+    show_cmds: ["show rip database"]
+  docs: { anchors: [] }
+
+- label: RTE_BGP
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router bgp\\s+\\d+"
+      - "^address-family\\s+ipv(4|6)\\s+unicast\\b"
+    show_cmds: ["show bgp summary", "show bgp ipv4 unicast"]
+  docs: { anchors: [] }
+
+# -------------------------
+# SECURITY SERVICES / THREAT
+# -------------------------
+- label: SEC_ThreatDetection
+  domain: Security Services
+  presence:
+    config_regex:
+      - "^threat-detection\\s+(basic-threat|rate|statistics|scanning-threat|service)\\b"
+    show_cmds: ["show threat-detection statistics", "show run threat-detection"]
+  docs: { anchors: [] }
+
+- label: SEC_Botnet_Filter
+  domain: Security Services
+  presence:
+    config_regex: ["^dynamic-filter\\b|^botnet\\b"]
+    show_cmds: ["show dynamic-filter", "show run dynamic-filter"]
+  docs: { anchors: [] }
+
+- label: SEC_URL_Filtering_WCCP
+  domain: Security Services
+  presence:
+    config_regex: ["\\bwccp\\s+web-cache\\b"]
+    show_cmds: ["show wccp"]
+  docs: { anchors: [] }
+
+- label: SEC_TCP_Options_Enforcement
+  domain: Security Services
+  presence:
+    config_regex: ["^tcp-options\\b"]
+    show_cmds: ["show run tcp-options"]
+  docs: { anchors: [] }
+
+# -------------------------
+# HIGH AVAILABILITY / CLUSTER / CONTEXTS
+# -------------------------
+- label: HA_Failover
+  domain: HA/Clustering/Contexts
+  presence:
+    config_regex:
+      - "^failover\\b"
+      - "^failover (replication|wait-disable|link|lan unit|key|peer)\\b"
+    show_cmds: ["show failover", "show run failover"]
+  docs: { anchors: [] }
+
+- label: HA_Clustering
+  domain: HA/Clustering/Contexts
+  presence:
+    config_regex:
+      - "^cluster-group\\s+\\S+"
+      - "^cluster interface\\b"
+    show_cmds: ["show cluster info", "show run cluster"]
+  docs: { anchors: [] }
+
+- label: CTX_Multiple_Contexts
+  domain: HA/Clustering/Contexts
+  presence:
+    config_regex:
+      - "^mode\\s+multiple\\b"
+      - "^context\\s+\\S+"
+      - "^allocate-interface\\b"
+    show_cmds: ["show mode", "show context"]
+  docs: { anchors: [] }
+
+- label: MODE_Transparent
+  domain: HA/Clustering/Contexts
+  presence:
+    config_regex: ["^firewall\\s+transparent\\b|^mode\\s+transparent\\b"]
+    show_cmds: ["show firewall", "show mode"]
+  docs: { anchors: [] }
+
+- label: MODE_Routed
+  domain: HA/Clustering/Contexts
+  presence:
+    config_regex: ["^firewall\\s+routed\\b|^mode\\s+routed\\b"]
+    show_cmds: ["show firewall", "show mode"]
+  docs: { anchors: [] }
+
+# -------------------------
+# INTERFACES / BRIDGING
+# -------------------------
+- label: IF_Physical_PortChannel
+  domain: Interfaces/Bridge
+  presence:
+    config_regex:
+      - "^interface\\s+Port-channel\\d+"
+      - "^channel-group\\s+\\d+\\s+mode\\s+\\S+"
+    show_cmds: ["show interface port-channel", "show run interface"]
+  docs: { anchors: [] }
+
+- label: IF_Bridge_Group_Transparent
+  domain: Interfaces/Bridge
+  presence:
+    config_regex:
+      - "^bridge-group\\s+\\d+"
+      - "^bridge-group\\s+\\d+\\s+forward-time\\b"
+    show_cmds: ["show bridge-group", "show run interface | inc bridge-group"]
+  docs: { anchors: [] }
+
+- label: IF_Subinterfaces_VLAN
+  domain: Interfaces/Bridge
+  presence:
+    config_regex:
+      - "^interface\\s+\\S+\\.\\d+"
+      - "^vlan\\s+\\d+"
+    show_cmds: ["show interface ip brief", "show run interface"]
+  docs: { anchors: [] }
+
+# -------------------------
+# MANAGEMENT / TELEMETRY / AAA
+# -------------------------
+- label: MGMT_SSH_HTTP_ASDM
+  domain: Management/Telemetry
+  presence:
+    config_regex:
+      - "^ssh\\s+\\S+"
+      - "^http\\s+\\S+"
+      - "^asdm\\s+image\\b|^asdm\\s+history\\b"
+    show_cmds: ["show run ssh", "show run http", "show asdm image"]
+  docs: { anchors: [] }
+
+- label: MGMT_SNMP
+  domain: Management/Telemetry
+  presence:
+    config_regex: ["^snmp-server\\s+\\S+"]
+    show_cmds: ["show snmp-server"]
+  docs: { anchors: [] }
+
+- label: MGMT_Syslog
+  domain: Management/Telemetry
+  presence:
+    config_regex: ["^logging\\s+(host|buffered|trap)\\b"]
+    show_cmds: ["show logging", "show run logging"]
+  docs: { anchors: [] }
+
+- label: MGMT_NetFlow_NSEL
+  domain: Management/Telemetry
+  presence:
+    config_regex:
+      - "^flow-export\\s+destination\\b|^flow-export\\s+event-type\\b"
+      - "^ip flow-export destination\\b"
+    show_cmds: ["show flow-export counters", "show run flow-export"]
+  docs: { anchors: [] }
+
+- label: AAA_TACACS_RADIUS
+  domain: Management/Telemetry
+  presence:
+    config_regex:
+      - "^aaa authentication\\b|^aaa authorization\\b|^aaa accounting\\b"
+      - "^tacacs-server\\b|^radius-server\\b"
+    show_cmds: ["show aaa-server", "show run aaa"]
+  docs: { anchors: [] }
+
+- label: MGMT_NTP
+  domain: Management/Telemetry
+  presence:
+    config_regex: ["^ntp\\s+server\\b"]
+    show_cmds: ["show ntp associations"]
+  docs: { anchors: [] }
+
+# -------------------------
+# QOS
+# -------------------------
+- label: QOS_Police_Priority
+  domain: QoS
+  presence:
+    config_regex:
+      - "\\bpolice\\s+input\\b|\\bpriority\\s+queue\\b"
+      - "^policy-map\\s+\\S+"
+      - "^service-policy\\s+\\S+\\s+(global|interface\\s+\\S+)"
+    show_cmds: ["show service-policy", "show run policy-map"]
+  docs: { anchors: [] }
+
+# -------------------------
+# SYSTEM / MISC
+# -------------------------
+- label: SYS_TCP_Timeouts
+  domain: System
+  presence:
+    config_regex: ["^timeout\\s+(conn|udp|icmp|half-closed|h323|sunrpc|sip|mgcp)\\b"]
+    show_cmds: ["show run timeout"]
+  docs: { anchors: [] }
+
+- label: SYS_Time_Range_Scheduler
+  domain: System
+  presence:
+    config_regex: ["^scheduler allocate\\b|^time-range\\s+\\S+"]
+    show_cmds: ["show run scheduler", "show run time-range"]
+  docs: { anchors: [] }
+

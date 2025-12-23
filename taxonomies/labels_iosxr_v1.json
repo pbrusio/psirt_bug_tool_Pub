@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "max_labels": 3,
+  "labels": [
+    {"id":"RTE_Static","desc":"Static routing"},
+    {"id":"RTE_OSPF","desc":"OSPF routing"},
+    {"id":"RTE_BGP","desc":"BGP routing"},
+    {"id":"RTE_ISIS","desc":"IS-IS routing"},
+    {"id":"MPLS_LDP","desc":"MPLS LDP configuration"},
+    {"id":"MPLS_TE","desc":"MPLS Traffic-Engineering"},
+    {"id":"MPLS_VPN","desc":"MPLS VPN / L3VPN / L2VPN"},
+    {"id":"MPLS_STATIC","desc":"Static MPLS labels"},
+    {"id":"VPN_IKEv2","desc":"IKEv2 / IPsec setups"},
+    {"id":"VPN_IPSec","desc":"IPsec transform/profile configuration"},
+    {"id":"VPN_DMVPN","desc":"DMVPN / multipoint tunnels"},
+    {"id":"SEC_BGP_ROUTE_FILTERING","desc":"Route-policy / prefix-set filtering"},
+    {"id":"SEC_CONTROL_PLANE_POLICY","desc":"Control-plane policy / ACLs"},
+    {"id":"SEC_DHCP_SNOOP","desc":"DHCP snooping"},
+    {"id":"SEC_IPSEC_NULL_TUNNEL_PROTECTION","desc":"IPsec null-encrypt protection"},
+    {"id":"QOS_POLICING","desc":"QoS policing / shaping"},
+    {"id":"QOS_MARKING","desc":"DSCP / classification / marking"},
+    {"id":"MGMT_SNMP","desc":"SNMP management"},
+    {"id":"MGMT_SYSLOG","desc":"Syslog / logging host"},
+    {"id":"MGMT_NTP","desc":"NTP / time synchronization"},
+    {"id":"MGMT_RPC / NETCONF","desc":"RPC / NETCONF server / YANG"},
+    {"id":"SYSTEM_BOOTSTRAP / UPGRADE","desc":"Bootstrap / install / upgrade features"},
+    {"id":"SYSTEM_LICENSE","desc":"IOS-XR licensing / feature license management"}
+  ]
+}
+

@@ -1,0 +1,224 @@
+# v1.0 — Cisco IOS-XR (Carrier/Service router OS)
+# Domains: Routing, MPLS/TE, VPN, Security, QoS, Management, System, Interfaces
+
+# -------------------------
+# ROUTING / IP SERVICES
+# -------------------------
+- label: RTE_Static
+  domain: Routing
+  presence:
+    config_regex:
+      - "^ip route\\b"
+      - "^ipv6 route\\b"
+    show_cmds: ["show route static", "show route"]
+  docs: { anchors: [] }
+
+- label: RTE_OSPF
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router ospf\\b"
+      - "^network \\S+ area \\S+"
+    show_cmds: ["show ospf neighbor", "show ospf route"]
+  docs: { anchors: [] }
+
+- label: RTE_BGP
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router bgp\\b"
+      - "address-family"
+    show_cmds: ["show bgp summary", "show bgp ipv4 unicast"]
+  docs: { anchors: [] }
+
+- label: RTE_ISIS
+  domain: Routing
+  presence:
+    config_regex:
+      - "^router isis\\b"
+      - "^interface \\S+ isis"
+    show_cmds: ["show isis neighbor", "show isis route"]
+  docs: { anchors: [] }
+
+# -------------------------
+# MPLS / TE / LDP / RSVP
+# -------------------------
+- label: MPLS_LDP
+  domain: MPLS/TE
+  presence:
+    config_regex:
+      - "^mpls ldp\\b"
+      - "^mpls label"
+    show_cmds: ["show mpls ldp neighbor", "show mpls ldp bindings"]
+  docs: { anchors: [] }
+
+- label: MPLS_TE
+  domain: MPLS/TE
+  presence:
+    config_regex:
+      - "^mpls traffic-eng\\b"
+      - "^interface tunnel-te"
+    show_cmds: ["show mpls traffic-eng tunnels", "show mpls traffic-eng link"]
+  docs: { anchors: [] }
+
+- label: MPLS_VPN (L3VPN / L2VPN)
+  domain: MPLS/TE
+  presence:
+    config_regex:
+      - "vrf\\b"
+      - "l2vpn"
+    show_cmds: ["show vrf detail", "show l2vpn"]
+  docs: { anchors: [] }
+
+- label: MPLS_STATIC
+  domain: MPLS/TE
+  presence:
+    config_regex:
+      - "^mpls static\\b"
+    show_cmds: ["show mpls static summary"]
+  docs: { anchors: [] }
+
+# -------------------------
+# VPN / IPsec / Tunnels
+# -------------------------
+- label: VPN_IKEv2
+  domain: VPN
+  presence:
+    config_regex:
+      - "crypto ikev2 policy\\b"
+      - "crypto ikev2 profile\\b"
+    show_cmds: ["show crypto ikev2 sa", "show crypto ikev2 profile"]
+  docs: { anchors: [] }
+
+- label: VPN_IPSec
+  domain: VPN
+  presence:
+    config_regex:
+      - "crypto ipsec transform-set\\b"
+      - "crypto ipsec profile\\b"
+    show_cmds: ["show crypto ipsec sa", "show crypto ipsec profile"]
+  docs: { anchors: [] }
+
+- label: VPN_DMVPN
+  domain: VPN
+  presence:
+    config_regex:
+      - "dmvpn\\b"
+      - "tunnel mode gre multipoint"
+    show_cmds: ["show dmvpn", "show crypto ikev2 sa"]
+  docs: { anchors: [] }
+
+# -------------------------
+# SECURITY / CONTROL PLANE PROTECTION
+# -------------------------
+- label: SEC_BGP_ROUTE_FILTERING
+  domain: Security
+  presence:
+    config_regex:
+      - "route-policy\\b"
+      - "prefix-set\\b"
+    show_cmds: ["show route-policy", "show prefix-set"]
+  docs: { anchors: [] }
+
+- label: SEC_CONTROL_PLANE_POLICY
+  domain: Security
+  presence:
+    config_regex:
+      - "control-plane\\b"
+      - "class-map type control-plane"
+    show_cmds: ["show control-plane", "show policy-map control-plane"]
+  docs: { anchors: [] }
+
+- label: SEC_DHCP_SNOOP
+  domain: Security
+  presence:
+    config_regex:
+      - "ipv4 dhcp snooping"
+      - "ipv6 dhcp snooping"
+    show_cmds: ["show dhcp snooping binding", "show dhcp snooping"]
+  docs: { anchors: [] }
+
+- label: SEC_IPSEC_NULL_TUNNEL_PROTECTION
+  domain: Security
+  presence:
+    config_regex:
+      - "ipsec encrypt null"
+    show_cmds: ["show crypto ipsec sa"]
+  docs: { anchors: [] }
+
+# -------------------------
+# QOS / TRAFFIC ENGINEERING
+# -------------------------
+- label: QOS_POLICING
+  domain: QoS
+  presence:
+    config_regex:
+      - "police\\b"
+      - "policy-map"
+    show_cmds: ["show policy-map interface", "show qos counters"]
+  docs: { anchors: [] }
+
+- label: QOS_MARKING
+  domain: QoS
+  presence:
+    config_regex:
+      - "classify\\b"
+      - "dscp\\b"
+    show_cmds: ["show qos interface", "show policy-map"]
+  docs: { anchors: [] }
+
+# -------------------------
+# MANAGEMENT / TELEMETRY / SYSTEM
+# -------------------------
+- label: MGMT_SNMP
+  domain: Management
+  presence:
+    config_regex:
+      - "snmp-server\\b"
+    show_cmds: ["show snmp server"]
+  docs: { anchors: [] }
+
+- label: MGMT_SYSLOG
+  domain: Management
+  presence:
+    config_regex:
+      - "logging host"
+      - "logging buffered"
+    show_cmds: ["show logging", "show run logging"]
+  docs: { anchors: [] }
+
+- label: MGMT_NTP
+  domain: Management
+  presence:
+    config_regex:
+      - "ntp server"
+    show_cmds: ["show ntp associations"]
+  docs: { anchors: [] }
+
+- label: MGMT_RPC / NETCONF
+  domain: Management
+  presence:
+    config_regex:
+      - "netconf-yang\\b"
+      - "rpc-server\\b"
+    show_cmds: ["show running-config | include netconf", "show rpc-server"]
+  docs: { anchors: [] }
+
+- label: SYSTEM_BOOTSTRAP / UPGRADE
+  domain: System
+  presence:
+    config_regex:
+      - "boot system\\b"
+      - "install add\\b"
+    show_cmds: ["show version", "show install summary"]
+  docs: { anchors: [] }
+
+- label: SYSTEM_LICENSE
+  domain: System
+  presence:
+    config_regex:
+      - "license feature\\b"
+      - "license install\\b"
+    show_cmds: ["show license", "show license all"]
+  docs: { anchors: [] }
+

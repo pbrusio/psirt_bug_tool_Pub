@@ -1,0 +1,54 @@
+# =============================================================================
+# CVE_EVAL_V2 - Development & Training Requirements
+# =============================================================================
+# Version: 3.2 | Last Updated: December 16, 2025
+#
+# These are OPTIONAL dependencies for:
+# - LoRA adapter training
+# - Model evaluation and benchmarking
+# - Data synthesis and labeling pipelines
+# - Development utilities
+#
+# Most users do NOT need these. Only install if you're:
+# - Training new LoRA adapters
+# - Running synthesis pipelines
+# - Doing model evaluation
+#
+# INSTALLATION:
+# -------------
+# pip install -r requirements-dev.txt
+#
+# =============================================================================
+
+# =============================================================================
+# LORA TRAINING (NVIDIA GPU Required)
+# =============================================================================
+# For training LoRA adapters on NVIDIA GPUs:
+# accelerate>=0.24.0            # Distributed training
+# peft>=0.6.0                   # Parameter-efficient fine-tuning
+# bitsandbytes>=0.41.0          # 8-bit optimizers (Linux only)
+# datasets>=2.14.0              # HuggingFace datasets
+# evaluate>=0.4.0               # Model evaluation metrics
+
+# =============================================================================
+# FRONTIER LLM PROVIDERS (for labeling pipelines)
+# =============================================================================
+google-generativeai>=0.3.0    # Gemini API (primary labeler)
+# anthropic>=0.18.0           # Claude API (alternative)
+# openai>=1.0.0               # OpenAI API (alternative)
+
+# =============================================================================
+# DATA SCIENCE / ANALYSIS
+# =============================================================================
+scikit-learn>=1.3.0           # ML utilities, metrics
+scipy>=1.11.0                 # Scientific computing
+matplotlib>=3.7.0             # Plotting
+seaborn>=0.12.0               # Statistical visualization
+
+# =============================================================================
+# CODE QUALITY (Optional)
+# =============================================================================
+# ruff>=0.1.0                 # Fast linter
+# black>=23.0.0               # Code formatter
+# mypy>=1.5.0                 # Type checking
+# pre-commit>=3.4.0           # Git hooks

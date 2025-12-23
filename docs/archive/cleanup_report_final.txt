@@ -1,0 +1,164 @@
+================================================================================
+CVE-EVAL DATA CLEANUP REPORT
+Generated: 2025-12-12T06:57:01.231748
+================================================================================
+
+## SUMMARY
+Total examples analyzed: 7681
+Examples to REMOVE:      616 (8.0%)
+Examples to KEEP:        7065 (92.0%)
+
+## BY SEVERITY
+🔴 CRITICAL (remove):  616
+🟠 HIGH (review):      1557
+🟡 REVIEW (manual):    0
+🟢 OK (keep):          5508
+
+## BY ISSUE TYPE
+  HIGH: 1558
+  CRITICAL: 644
+  PLATFORM: 193
+  SUGGEST: 51
+  MDNS: 25
+  BLACKLIST: 20
+
+## MOST AFFECTED LABELS
+  SYS_Boot_Upgrade: 230/230 removed (100%)
+  SEC_CoPP: 219/219 removed (100%)
+  MGMT_SSH_HTTP: 118/335 removed (35%)
+  MGMT_NTP: 77/77 removed (100%)
+  MGMT_AAA_TACACS_RADIUS: 73/221 removed (33%)
+  MGMT_SNMP: 59/950 removed (6%)
+  IP_DHCP_Server: 48/48 removed (100%)
+  IF_Physical: 47/243 removed (19%)
+  IP_NHRP_DMVPN: 35/35 removed (100%)
+  IP_NAT: 27/67 removed (40%)
+  HA_Redundancy_SSO: 23/68 removed (34%)
+  RTE_CEF: 22/125 removed (18%)
+  IP_Unnumbered: 15/15 removed (100%)
+  QOS_MQC_ClassPolicy: 15/54 removed (28%)
+  IP_PrefixList: 14/14 removed (100%)
+  L2_VLAN_VTP: 12/65 removed (18%)
+  SEC_PACL_VACL: 11/57 removed (19%)
+  IF_Speed_Duplex: 11/145 removed (8%)
+  HA_StackWise: 9/63 removed (14%)
+  MGMT_Syslog: 8/109 removed (7%)
+
+## CRITICAL EXAMPLES (first 20)
+
+  [13] cisco-sa-apvlan-TDTtb4FY
+      Labels: ['SYS_Boot_Upgrade', 'L2_VLAN_VTP']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in the client forwarding code of multiple Cisco&nbsp;Access Points (APs) could allow...
+
+  [15] cisco-sa-dcnm-sql-inj-OAQOObP
+      Labels: ['APP_IOx']
+      Issues: CRITICAL: Label 'APP_IOx' has 0% valid training examples; BLACKLIST: Advisory 'cisco-sa-dcnm-sql-inj-OAQOObP' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bDCNM\\b']
+      Summary: Multiple vulnerabilities in certain REST API endpoints of Cisco&nbsp;Data Center Network Manager (DC...
+
+  [18] cisco-sa-dcnm-api-path-TpTApx2p
+      Labels: ['APP_IOx']
+      Issues: CRITICAL: Label 'APP_IOx' has 0% valid training examples; BLACKLIST: Advisory 'cisco-sa-dcnm-api-path-TpTApx2p' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bDCNM\\b']
+      Summary: Multiple vulnerabilities in the REST API endpoint of Cisco&nbsp;Data Center Network Manager (DCNM) c...
+
+  [20] cisco-sa-ndfc-raci-T46k3jnN
+      Labels: ['APP_IOx']
+      Issues: CRITICAL: Label 'APP_IOx' has 0% valid training examples; BLACKLIST: Advisory 'cisco-sa-ndfc-raci-T46k3jnN' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bDCNM\\b', '\\bNDFC\\b']
+      Summary: A vulnerability in Cisco Nexus Dashboard Fabric Controller (NDFC), formerly Cisco Data Center Networ...
+
+  [21] cisco-sa-ndfc-cmdinj-UvYZrKfr
+      Labels: ['APP_IOx']
+      Issues: CRITICAL: Label 'APP_IOx' has 0% valid training examples; BLACKLIST: Advisory 'cisco-sa-ndfc-cmdinj-UvYZrKfr' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bNDFC\\b', '\\bNexus Dashboard\\b']
+      Summary: A vulnerability in the REST API and web UI of Cisco Nexus Dashboard Fabric Controller (NDFC) could a...
+
+  [22] cisco-sa-ndfc-dir-trav-SSn3AYDw
+      Labels: ['SYS_Boot_Upgrade']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples; PLATFORM: Non-IOS-XE content detected: ['\\bNDFC\\b', '\\bNexus Dashboard\\b']
+      Summary: A vulnerability in the Out-of-Band (OOB) Plug and Play (PnP) feature of Cisco Nexus Dashboard Fabric...
+
+  [25] cisco-sa-epnm-info-disc-PjTZ5r6C
+      Labels: ['APP_IOx']
+      Issues: CRITICAL: Label 'APP_IOx' has 0% valid training examples; BLACKLIST: Advisory 'cisco-sa-epnm-info-disc-PjTZ5r6C' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bEPNM\\b']
+      Summary: A vulnerability in the REST API of Cisco&nbsp;Evolved Programmable Network Manager (EPNM) could allo...
+
+  [30] cisco-sa-hyperflex-upload-KtCK8Ugz
+      Labels: ['MGMT_SSH_HTTP']
+      Issues: HIGH: Label 'MGMT_SSH_HTTP' has >50% invalid training examples; BLACKLIST: Advisory 'cisco-sa-hyperflex-upload-KtCK8Ugz' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bHyperFlex\\b']
+      Summary: A vulnerability in the web-based management interface of Cisco&nbsp;HyperFlex HX Data Platform could...
+
+  [46] cisco-sa-ewlc-cdp-dos-fpeks9K
+      Labels: ['MGMT_LLDP_CDP', 'SYS_Boot_Upgrade']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in Cisco IOS XE Wireless Controller Software&nbsp;could allow an unauthenticated, ad...
+
+  [53] cisco-sa-c9800-cwa-acl-nPSbHSnA
+      Labels: ['SYS_Boot_Upgrade', 'MGMT_AAA_TACACS_RADIUS']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in the Central Web Authentication (CWA) feature of Cisco IOS XE Software for Wireles...
+
+  [60] cisco-sa-sdwan-utd-dos-hDATqxs
+      Labels: ['SYS_Boot_Upgrade']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in the process that classifies traffic that is going to the Unified Threat Defense (...
+
+  [66] cisco-sa-ios-xe-pnp-priv-esc-AmG3kuVL
+      Labels: ['SYS_Boot_Upgrade']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in a diagnostic command for the Plug-and-Play (PnP) subsystem of Cisco&nbsp;IOS XE S...
+
+  [119] cisco-sa-cucm-rce-pqVYwyb
+      Labels: ['SYS_Licensing_Smart']
+      Issues: BLACKLIST: Advisory 'cisco-sa-cucm-rce-pqVYwyb' is known-bad; PLATFORM: Non-IOS-XE content detected: ['\\bCUCM\\b', '\\bUnified Communications\\b']
+      Summary: A vulnerability in the SOAP API endpoint of Cisco&nbsp;Unified Communications Manager, Cisco&nbsp;Un...
+
+  [133] cisco-sa-XE-ACE-75K3bRWe
+      Labels: ['SEC_CoPP', 'SYS_Boot_Upgrade', 'MGMT_AAA_TACACS_RADIUS']
+      Issues: CRITICAL: Label 'SEC_CoPP' has 0% valid training examples; CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in the boot logic of Cisco&nbsp;IOS XE Software could allow an authenticated, local ...
+
+  [134] cisco-sa-ios-xe-os-cmd-inj-Ef6TV5e9
+      Labels: ['MGMT_SSH_HTTP', 'SYS_Boot_Upgrade']
+      Issues: CRITICAL: Label 'SYS_Boot_Upgrade' has 0% valid training examples
+      Summary: A vulnerability in the web UI of Cisco&nbsp;IOS XE Software enables an authenticated, remote attacke...
+
+  [143] cisco-sa-XE-BLKH-Ouvrnf2s
+      Labels: ['SEC_CoPP', 'MGMT_SSH_HTTP', 'MGMT_AAA_TACACS_RADIUS']
+      Issues: CRITICAL: Label 'SEC_CoPP' has 0% valid training examples
+      Summary: A vulnerability in Cisco&nbsp;IOS XE Software enables an authenticated, local attacker with high pri...
+
+  [144] cisco-sa-ios-xe-sdwan-VQAhEjYw
+      Labels: ['SEC_CoPP', 'MGMT_SSH_HTTP', 'MGMT_AAA_TACACS_RADIUS']
+      Issues: CRITICAL: Label 'SEC_CoPP' has 0% valid training examples
+      Summary: A security flaw in the CLI of Cisco IOS XE SD-WAN Software could allow an authenticated, local attac...
+
+  [146] cisco-sa-iosxe-webcmdinjsh-UFJxTgZD
+      Labels: ['SEC_CoPP', 'MGMT_SSH_HTTP']
+      Issues: CRITICAL: Label 'SEC_CoPP' has 0% valid training examples
+      Summary: A vulnerability in the web UI of Cisco IOS XE Software could allow an authenticated, remote attacker...
+
+  [149] cisco-sa-webuiapi-inj-Nyrq92Od
+      Labels: ['SEC_CoPP', 'MGMT_SSH_HTTP']
+      Issues: CRITICAL: Label 'SEC_CoPP' has 0% valid training examples
+      Summary: A vulnerability in the web UI feature of Cisco&nbsp;IOS XE Software enables an authenticated, remote...
+
+  [155] cisco-sa-rsvp-dos-OypvgVZf
+      Labels: ['SEC_CoPP', 'RTE_CEF']
+      Issues: CRITICAL: Label 'SEC_CoPP' has 0% valid training examples
+      Summary: A vulnerability in the Resource Reservation Protocol (RSVP) feature of Cisco IOS Software and Cisco ...
+
+## RECOMMENDATIONS
+
+1. IMMEDIATE: Remove all CRITICAL examples (automated by this script)
+
+2. MANUAL REVIEW: Check HIGH severity examples for false positives
+   Export with: --export-review flag
+
+3. NEW LABELS NEEDED:
+   - IP_Fragmentation
+   - IP_SLA_TWAMP
+   - OVERLAY_VXLAN_EVPN
+   - SDWAN_Filtering
+   - SDWAN_UTD
+   - WIRELESS_MDNS
+
+4. RETRAIN: After cleanup, retrain LoRA adapter on cleaned data

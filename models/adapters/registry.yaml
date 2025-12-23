@@ -1,0 +1,64 @@
+# Adapter Registry
+# Describes available LoRA adapters for Foundation-Sec-8B
+# Version: 1.0 | Last Updated: 2024-12-19
+
+adapters:
+  mlx_v1:
+    path: models/adapters/mlx_v1
+    platform: [mps]
+    framework: mlx
+    format: safetensors  # MLX-specific format
+    accuracy: 71.0
+    training_examples: 7065
+    lora_rank: 8
+    lora_scale: 20.0
+    base_model: fdtn-ai/Foundation-Sec-8B
+    description: "MLX Chain-of-Thought adapter for Mac (Apple Silicon)"
+    inference_module: mlx_inference.py
+    notes: |
+      - Trained with MLX-lm on Mac Studio M3 Ultra
+      - Uses chain-of-thought prompting
+      - NOT compatible with PEFT/PyTorch
+
+  cuda_v1:
+    path: models/adapters/cuda_v1
+    platform: [cuda, cpu]
+    framework: peft
+    format: safetensors  # HuggingFace PEFT format
+    accuracy: 57.6
+    training_examples: 1989
+    lora_rank: 16
+    lora_alpha: 32
+    base_model: fdtn-ai/Foundation-Sec-8B
+    description: "PEFT LoRA adapter for Linux (CUDA) and CPU"
+    inference_module: transformers_inference.py
+    notes: |
+      - Trained with HuggingFace PEFT on Linux
+      - High-quality filtered training data
+      - Compatible with any CUDA GPU or CPU
+
+  base_model:
+    path: null
+    platform: [cuda, mps, cpu]
+    framework: any
+    accuracy: 20.0
+    description: "No adapter - base Foundation-Sec-8B only (fallback)"
+    notes: |
+      - Used when no adapter is available
+      - Significantly lower accuracy
+
+# Platform auto-selection rules
+defaults:
+  mps: mlx_v1      # Mac users get MLX adapter
+  cuda: cuda_v1    # Linux/CUDA users get PEFT adapter
+  cpu: cuda_v1     # CPU falls back to PEFT format
+
+# Shared data files (used by ALL adapters)
+shared_data:
+  database: vulnerability_db.sqlite
+  faiss_index: models/faiss_index.bin
+  labeled_examples: models/labeled_examples.parquet
+  description: |
+    These files are platform-independent and shared by all adapters.
+    They contain the 9,705 labeled vulnerabilities (bugs + PSIRTs)
+    used for few-shot retrieval and database scanning.

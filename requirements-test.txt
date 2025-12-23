@@ -1,0 +1,37 @@
+# =============================================================================
+# CVE_EVAL_V2 - Testing Requirements
+# =============================================================================
+# Version: 3.2 | Last Updated: December 16, 2025
+#
+# INSTALLATION:
+# -------------
+# pip install -r requirements-test.txt
+#
+# RUNNING TESTS:
+# --------------
+# Full test suite:     pytest tests/ -v
+# Unit tests only:     pytest tests/unit/ -v
+# Integration tests:   pytest tests/integration/ -v
+# With coverage:       pytest tests/ --cov=backend --cov-report=html
+# Parallel execution:  pytest tests/ -n auto
+#
+# =============================================================================
+
+# =============================================================================
+# CORE TESTING FRAMEWORK
+# =============================================================================
+pytest>=7.4.0                 # Test framework
+pytest-cov>=4.1.0             # Coverage reporting
+pytest-xdist>=3.3.0           # Parallel test execution (-n auto)
+pytest-asyncio>=0.21.0        # Async test support
+pytest-mock>=3.11.1           # Mocking utilities
+
+# =============================================================================
+# HTTP MOCKING
+# =============================================================================
+responses>=0.23.0             # Mock HTTP requests for API tests
+
+# =============================================================================
+# COVERAGE
+# =============================================================================
+coverage[toml]>=7.2.0         # Coverage with pyproject.toml support

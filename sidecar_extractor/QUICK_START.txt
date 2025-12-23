@@ -1,0 +1,122 @@
+================================================================================
+    IOS-XE Feature Extractor - Air-Gapped Sidecar
+    QUICK START CARD
+================================================================================
+
+📦 WHAT YOU NEED
+  • extract_iosxe_features_standalone.py (28 KB - single file!)
+  • Python 3.6+ (already on most systems)
+  • NO external dependencies
+  • NO YAML files
+  • NO PyYAML library
+
+================================================================================
+
+🚀 BASIC USAGE
+
+  From saved config file:
+    python3 extract_iosxe_features_standalone.py \
+      --config running-config.txt \
+      --output snapshot.json
+
+  That's it! No other files needed.
+
+================================================================================
+
+📋 AIR-GAPPED WORKFLOW
+
+  1. Copy script to secure network:
+     scp extract_iosxe_features_standalone.py bastion:/tmp/
+
+  2. Extract features from device config:
+     ssh bastion
+     python3 extract_iosxe_features_standalone.py \
+       --config /path/to/config.txt \
+       --output device-snapshot.json
+
+  3. Transfer snapshot out (safe - no secrets!):
+     scp device-snapshot.json analyst-workstation:/tmp/
+
+  4. Analyze with PSIRT analyzer:
+     curl -X POST http://analyzer:8000/api/v1/verify-snapshot \
+       -d '{"analysis_id": "...", "snapshot": '$(cat device-snapshot.json)'}'
+
+================================================================================
+
+✅ WHAT GETS EXTRACTED
+
+  snapshot.json contains:
+    • Feature labels (e.g., "MGMT_SSH_HTTP", "SEC_CoPP")
+    • Platform (always "IOS-XE")
+    • Feature count and timestamp
+
+  snapshot.json does NOT contain:
+    ✗ IPs, hostnames, passwords
+    ✗ Configuration snippets
+    ✗ Any sensitive data
+
+================================================================================
+
+🧪 QUICK TEST
+
+  # Create test config
+  echo "hostname TEST
+  spanning-tree mode rapid-pvst
+  router bgp 65000
+  ip ssh version 2" > test.txt
+
+  # Extract
+  python3 extract_iosxe_features_standalone.py --config test.txt -o test.json
+
+  # View
+  cat test.json
+  # Should show: L2_STP, RTE_BGP, MGMT_SSH_HTTP
+
+================================================================================
+
+📊 FEATURES EMBEDDED
+
+  66 IOS-XE features across all domains:
+    • L2 Switching (13)      • QoS (3)
+    • L3 Routing (8)         • Security (9)
+    • L3/FHRP (3)            • TrustSec (2)
+    • IP Services (7)        • Management (8)
+    • Multicast (3)          • HA (4)
+    • System (2)             • Interfaces (3)
+    • Application Hosting (1)
+
+================================================================================
+
+🔧 TROUBLESHOOTING
+
+  "Config file not found"
+    → Check path: ls -la /path/to/config.txt
+
+  "Permission denied"
+    → Make executable: chmod +x extract_iosxe_features_standalone.py
+
+  "netmiko not installed" (only for live device mode)
+    → Use offline mode with saved config instead
+
+  Python version too old
+    → Need Python 3.6+: python3 --version
+
+================================================================================
+
+💡 PRO TIPS
+
+  • Script is 100% self-contained - just copy and run
+  • Works completely offline - no internet needed
+  • Output is safe to transfer - no sensitive data
+  • Compatible with main PSIRT analyzer API
+  • File size: 28 KB (vs 3 KB script + 15 KB YAMLs for original)
+
+================================================================================
+
+📚 MORE INFO
+
+  README.md - Full documentation
+  Main project: ../CLAUDE.md
+  Feature guide: ../FEATURE_EXTRACTOR_README.md
+
+================================================================================

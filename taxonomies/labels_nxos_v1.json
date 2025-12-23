@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "max_labels": 3,
+  "labels": [
+    {"id":"SW_L2_VLAN","desc":"VLAN configuration / SVI / VLAN membership"},
+    {"id":"SW_L2_VPC","desc":"Virtual Port-Channel / vPC domain"},
+    {"id":"SW_L2_VLAN_TRUNK","desc":"Switchport trunking / allowed VLANs"},
+    {"id":"SW_L2_ETHERCHANNEL","desc":"EtherChannel / Port-Channel bundling"},
+    {"id":"SW_L2_VLAN_VDC","desc":"VDC / virtual device context features"},
+    {"id":"RTE_STATIC","desc":"Static routing"},
+    {"id":"RTE_OSPF","desc":"OSPF (NX-OS)"},
+    {"id":"RTE_BGP","desc":"BGP (NX-OS)"},
+    {"id":"OVERLAY_VXLAN_EVPN","desc":"VXLAN / EVPN overlay"},
+    {"id":"OVERLAY_VXLAN_MULTI_HOMING","desc":"vPC in VXLAN overlay domain"},
+    {"id":"SEC_ACL_CONTROL_PLANE","desc":"ACLs / control-plane protection"},
+    {"id":"SEC_DHCP_SNOOP","desc":"DHCP Snooping on NX-OS"},
+    {"id":"SEC_UDLD","desc":"UDLD / unidirectional link detection"},
+    {"id":"SEC_DHCP_RELAY","desc":"DHCP relay / helper-address"},
+    {"id":"SEC_DNS_SRV","desc":"DNS feature / ip name-server"},
+    {"id":"QOS_POLICING","desc":"QoS policing / service-policy usage"},
+    {"id":"QOS_MARKING","desc":"Trust / marking / mls qos"},
+    {"id":"MGMT_SNMP","desc":"SNMP management"},
+    {"id":"MGMT_SYSLOG","desc":"Syslog / logging host"},
+    {"id":"MGMT_NTP","desc":"NTP time synchronization"},
+    {"id":"MGMT_TELNET_SSH","desc":"Telnet / SSH management"},
+    {"id":"MGMT_ISSU_ONLINE_UPGRADE","desc":"In-Service Software Upgrade (ISSU)"},
+    {"id":"MGMT_CFG_SYNC","desc":"Configuration synchronization (VDC / fabric)"},
+    {"id":"SYSTEM_RELOAD_RECOVERY","desc":"Boot / reload / recovery features"},
+    {"id":"SYSTEM_LICENSING","desc":"NX-OS licensing / feature license"}
+  ]
+}
+

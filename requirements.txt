@@ -1,0 +1,96 @@
+# =============================================================================
+# CVE_EVAL_V2 - Production Requirements
+# =============================================================================
+# Version: 3.2 | Last Updated: December 16, 2025
+#
+# HARDWARE REQUIREMENTS:
+# ----------------------
+# Option A: Apple Silicon (Recommended for development)
+#   - Mac M1/M2/M3/M4 with 32GB+ RAM (16GB minimum, 32GB recommended)
+#   - Uses MLX for fast on-device inference
+#   - ~16GB for Foundation-Sec-8B model in memory
+#
+# Option B: NVIDIA GPU (Recommended for production/training)
+#   - CUDA-capable GPU with 16GB+ VRAM (RTX 3090, 4090, A100, etc.)
+#   - 32GB+ system RAM
+#   - CUDA 11.8+ and cuDNN 8.6+
+#
+# Option C: CPU-only (Testing/Development only)
+#   - 32GB+ RAM
+#   - Very slow inference (~30s per analysis vs ~2s on GPU)
+#
+# STORAGE REQUIREMENTS:
+# ---------------------
+# - ~16GB for Foundation-Sec-8B model cache (HuggingFace)
+# - ~500MB for sentence-transformers embedder
+# - ~50MB for FAISS index + labeled examples
+# - ~50MB for vulnerability database
+#
+# QUICK START:
+# ------------
+# 1. Create virtual environment: python -m venv venv
+# 2. Activate: source venv/bin/activate (Linux/Mac) or venv\Scripts\activate (Windows)
+# 3. Install: pip install -r requirements.txt
+# 4. For Apple Silicon: pip install -r requirements-mlx.txt
+# 5. For testing: pip install -r requirements-test.txt
+#
+# =============================================================================
+
+# =============================================================================
+# BACKEND API (FastAPI)
+# =============================================================================
+fastapi==0.104.1              # Web framework for API
+uvicorn[standard]==0.24.0     # ASGI server with websocket support
+pydantic>=2.5.0               # Data validation and settings
+python-multipart==0.0.6       # Form data parsing
+aiosqlite==0.19.0             # Async SQLite support
+httpx==0.25.2                 # Async HTTP client
+
+# =============================================================================
+# DATA PROCESSING
+# =============================================================================
+pandas>=2.0.0                 # DataFrame operations
+numpy>=1.24.0                 # Numerical operations
+pyyaml>=6.0                   # YAML parsing (taxonomies)
+python-dotenv>=1.0.0          # Environment variable loading
+pyarrow>=14.0.0               # Parquet file support
+
+# =============================================================================
+# ML INFERENCE - CORE (Required)
+# =============================================================================
+transformers>=4.35.0          # HuggingFace transformers
+torch>=2.0.0                  # PyTorch (CPU/CUDA)
+sentence-transformers>=2.2.0  # Sentence embeddings for FAISS
+faiss-cpu>=1.7.4              # Vector similarity search
+safetensors>=0.4.0            # Safe model weight loading
+huggingface-hub>=0.20.0       # Model downloading
+tokenizers>=0.15.0            # Fast tokenization
+
+# =============================================================================
+# NETWORK DEVICE CONNECTIVITY (SSH)
+# =============================================================================
+netmiko>=4.2.0                # Multi-vendor network device SSH
+paramiko>=3.0.0               # SSH2 protocol library
+scp>=0.14.0                   # SCP file transfers
+textfsm>=1.1.0                # Parsing semi-structured text
+ntc-templates>=3.0.0          # TextFSM templates for network devices
+
+# =============================================================================
+# CISCO API INTEGRATION
+# =============================================================================
+requests>=2.31.0              # HTTP client for Cisco APIs
+
+# =============================================================================
+# UTILITIES
+# =============================================================================
+tqdm>=4.65.0                  # Progress bars
+rich>=13.0.0                  # Rich terminal output
+regex>=2023.0.0               # Advanced regex support
+
+# =============================================================================
+# OPTIONAL: Frontier LLM Providers (for batch labeling pipelines)
+# Uncomment as needed:
+# =============================================================================
+# google-generativeai>=0.3.0  # Gemini API
+# anthropic>=0.18.0           # Claude API
+# openai>=1.0.0               # OpenAI API

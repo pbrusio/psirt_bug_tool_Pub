@@ -1,0 +1,63 @@
+{
+  "description": "Golden-path PSIRT test corpus for architecture testing (Section 9)",
+  "version": "1.0.0",
+  "created": "2025-12-14",
+  "psirts": [
+    {
+      "id": "cisco-sa-iosxe-ssh-dos-001",
+      "summary": "A vulnerability in the SSH server implementation of Cisco IOS XE Software could allow an unauthenticated, remote attacker to cause a denial of service (DoS) condition on an affected device.",
+      "platform": "IOS-XE",
+      "expected_labels": ["MGMT_SSH_HTTP"],
+      "expected_confidence_min": 0.75,
+      "notes": "Clear SSH vulnerability, single label expected"
+    },
+    {
+      "id": "cisco-sa-iosxe-bgp-dos-002",
+      "summary": "A vulnerability in the BGP processing code of Cisco IOS XE Software could allow an unauthenticated, adjacent attacker to cause a denial of service by sending malformed BGP UPDATE messages.",
+      "platform": "IOS-XE",
+      "expected_labels": ["RTE_BGP"],
+      "expected_confidence_min": 0.75,
+      "notes": "Clear BGP routing vulnerability"
+    },
+    {
+      "id": "cisco-sa-iosxe-iox-dos-003",
+      "summary": "A vulnerability in the IOx application hosting subsystem of Cisco IOS XE Software could allow an authenticated, remote attacker to cause a denial of service (DoS) condition on an affected device.",
+      "platform": "IOS-XE",
+      "expected_labels": ["APP_IOx"],
+      "expected_confidence_min": 0.75,
+      "notes": "IOx application hosting vulnerability"
+    },
+    {
+      "id": "cisco-sa-iosxr-ospf-dos-004",
+      "summary": "A vulnerability in the OSPF packet processing code of Cisco IOS XR Software could allow an unauthenticated, adjacent attacker to cause a denial of service (DoS) condition.",
+      "platform": "IOS-XR",
+      "expected_labels": ["RTE_OSPF"],
+      "expected_confidence_min": 0.75,
+      "notes": "IOS-XR OSPF routing vulnerability"
+    },
+    {
+      "id": "cisco-sa-asa-vpn-005",
+      "summary": "A vulnerability in the remote access VPN feature of Cisco Adaptive Security Appliance (ASA) Software could allow an unauthenticated, remote attacker to cause a DoS condition.",
+      "platform": "ASA",
+      "expected_labels": ["VPN_RemoteAccess"],
+      "expected_confidence_min": 0.70,
+      "notes": "ASA VPN vulnerability"
+    }
+  ],
+  "bugs": [
+    {
+      "id": "CSCtest001",
+      "summary": "SSH connection drops when using RSA key authentication with ED25519 keys on IOS-XE devices",
+      "platform": "IOS-XE",
+      "expected_labels": ["MGMT_SSH_HTTP"],
+      "notes": "Typical bug summary format - terse"
+    },
+    {
+      "id": "CSCtest002",
+      "summary": "BGP session flaps during route refresh with large number of prefixes",
+      "platform": "IOS-XE",
+      "expected_labels": ["RTE_BGP"],
+      "notes": "Terse bug description for routing issue"
+    }
+  ]
+}

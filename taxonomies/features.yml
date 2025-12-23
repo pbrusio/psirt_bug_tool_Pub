@@ -1,0 +1,1199 @@
+- label: L2_STP
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^spanning-tree\s+mode\b
+    - ^spanning-tree\s+(vlan|mst)\b
+    - ^\s*spanning-tree\s+(portfast|port-priority|bpdu)\b
+    show_cmds:
+    - show spanning-tree
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities affecting Spanning Tree Protocol operations including BPDU  processing, port state
+    transitions (blocking/forwarding/disabled), root bridge election,  topology change notification, and all STP variants
+    (PVST+, Rapid-PVST+, MST/MSTP).  Use for issues with STP convergence, port role calculation, or STP-induced memory/CPU  exhaustion.
+    Do NOT use for loop prevention protocols like REP or UDLD.
+- label: L2_EtherChannel
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^interface\s+port-channel\b
+    - ^\s*channel-group\s+\d+\s+(mode|active|on)\b
+    show_cmds:
+    - show etherchannel summary
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities affecting the Port-channel logical interface as an aggregate  bundle, including
+    load balancing algorithms, member port suspension, bundle formation/teardown,  and Port-channel subinterface operations.
+    Use when the issue is with the logical bundle  behavior, not the negotiation protocol. Do NOT use for LACP or PAgP protocol-specific  issues—use
+    L2_LACP or L2_PAgP for negotiation/timer/state-machine bugs.
+- label: L2_LACP
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - \blacp\s+(rate|system-priority|port-priority)\b
+    show_cmds:
+    - show lacp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities specifically in the Link Aggregation Control Protocol (IEEE 802.3ad)  negotiation,
+    including LACP PDU processing, partner state synchronization, actor/partner  system-id handling, LACP rate (fast/slow)
+    timers, max-bundle limits, and suspended state  due to LACP failures. Use when the root cause is LACP protocol exchange
+    or state machine.  Do NOT use for general Port-channel issues unrelated to LACP negotiation—use L2_EtherChannel instead.
+- label: L2_PAgP
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - \bpagp\s+(port-priority|learn-method)\b
+    show_cmds:
+    - show pagp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in the Cisco-proprietary Port Aggregation Protocol, including  PAgP packet processing,
+    desirable/auto mode negotiation, port-priority manipulation,  learn-method (physical-port vs aggregation-port), and silent
+    mode behavior. Use for  PAgP-specific negotiation or state-machine bugs. Do NOT use for LACP or general  EtherChannel
+    issues—this is strictly for the legacy Cisco PAgP protocol.
+- label: L2_VLAN_VTP
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^vlan\s+\d+\b
+    - ^vtp\s+mode\b
+    show_cmds:
+    - show vlan
+    - show vtp status
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities affecting VLAN database operations (creation, deletion,  membership), VLAN tag processing
+    in the data plane, VTP protocol (server/client/transparent  mode, revision numbers, pruning), and VLAN-based traffic isolation
+    failures. Use for  VLAN ID handling bugs, VLAN 0 bypass attacks, native VLAN security issues, or VTP  propagation failures.
+    Do NOT use for Private VLANs—use L2_PrivateVLAN instead.
+- label: L2_PrivateVLAN
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^private-vlan\b
+    - \bbridge-domain\b
+    show_cmds:
+    - show interfaces private-vlan mapping
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Private VLAN (PVLAN) segmentation, including  promiscuous/isolated/community
+    port behavior, PVLAN trunk mapping, secondary VLAN  association, and PVLAN edge (protected port) isolation failures. Use
+    when the bug  involves intra-VLAN isolation enforcement or PVLAN port-type misconfiguration.  Do NOT use for standard
+    VLAN issues—use L2_VLAN_VTP for normal VLAN operations.
+- label: L2_UDLD
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^udld\s+(enable|aggressive)\b
+    - ^udld\s+port\b
+    show_cmds:
+    - show udld
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Unidirectional Link Detection protocol, including UDLD  PDU processing, aggressive/normal
+    mode behavior, err-disable triggering due to  unidirectional link detection, and UDLD interaction with other L2 protocols.
+    Use for  bugs where UDLD incorrectly detects or fails to detect one-way links. Do NOT use for  general link-down or physical
+    layer issues—UDLD is specifically about detecting  mismatched transmit/receive paths.
+- label: L2_REP
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^rep\s+(segment|preempt|admin vlan)\b
+    show_cmds:
+    - show rep topology
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Resilient Ethernet Protocol (REP) and related ring  protection mechanisms including
+    Flex Links, G.8032 (ERPS), REP segment/edge configuration,  preemption behavior, and topology change propagation in ring
+    networks. Use for  convergence failures, MAC flapping during failover, or memory leaks in the repm process.  Do NOT use
+    for STP-based loop prevention—use L2_STP instead.
+- label: L2_PTP_gPTP
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^ptp\s+(profile|priority1|priority2|role|ip dscp)\b
+    show_cmds:
+    - show ptp brief
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Precision Time Protocol (IEEE 1588 PTP) and generalized  PTP (IEEE 802.1AS gPTP)
+    for time synchronization, including BMCA (Best Master Clock  Algorithm), boundary/transparent clock operation, delay-request
+    handling, PTP port  capability detection, and timing jitter affecting AV/industrial applications. Use for  time synchronization
+    failures or PTP packet processing bugs. Do NOT use for NTP—use  MGMT_NTP instead.
+- label: L2_L2ProtocolTunneling
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^l2protocol-tunnel\b
+    - dot1q[- ]tunnel
+    show_cmds:
+    - show l2protocol-tunnel
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Layer 2 Protocol Tunneling (L2PT) used to transparently  tunnel control-plane
+    protocols (CDP, STP BPDUs, VTP, LLDP) across service provider  networks, including MAC address rewrite for tunneled PDUs
+    and protocol-specific CoS  marking. Use for L2PT encapsulation/decapsulation failures or tunneled protocol leakage.  Do
+    NOT use for VXLAN/EVPN overlay tunneling or QinQ—use appropriate overlay or  L2_Dot1Q_Tunnel labels instead.
+- label: L2_Switchport_Trunk
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^switchport\s+mode\s+trunk\b
+    - ^switchport\s+trunk\b
+    show_cmds:
+    - show interfaces switchport
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in 802.1Q trunk port operation, including trunk encapsulation  negotiation (DTP),
+    allowed VLAN list handling, native VLAN configuration, trunk  pruning, and tagged frame processing on trunk links. Use
+    when the bug specifically  affects trunk mode behavior or trunk-specific VLAN filtering. Do NOT use for access  port issues—use
+    L2_Switchport_Access. Do NOT use for QinQ tunneling—use L2_Dot1Q_Tunnel.
+- label: L2_Switchport_Access
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - ^switchport\s+mode\s+access\b
+    - ^switchport\s+access\s+vlan\b
+    show_cmds:
+    - show interfaces switchport
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in access port operation, including untagged VLAN assignment,  access port VLAN
+    membership, voice VLAN behavior on access ports, and frame handling  for single-VLAN edge ports. Use when the bug specifically
+    affects access mode behavior  or untagged frame processing. Do NOT use for trunk ports—use L2_Switchport_Trunk.  Do NOT
+    use for 802.1X/MAB authentication—use SEC_8021X or SEC_MAB.
+- label: L2_Dot1Q_Tunnel
+  domain: L2 Switching
+  presence:
+    config_regex:
+    - dot1q[- ]tunnel
+    show_cmds:
+    - show dot1q-tunnel
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in 802.1Q-in-Q (QinQ) tunneling for service provider  metro Ethernet, including
+    double-tagging (C-VLAN/S-VLAN) operations, selective QinQ  VLAN mapping, tunnel port configuration, and second-dot1q encapsulation
+    on subinterfaces.  Use for QinQ tag push/pop failures or C-VLAN to S-VLAN translation bugs. Do NOT use  for standard trunk
+    ports—use L2_Switchport_Trunk. Do NOT use for L2PT control protocol  tunneling—use L2_L2ProtocolTunneling.
+- label: RTE_Static
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^ip\s+route\s
+    - ^ipv6\s+route\s
+    show_cmds:
+    - show ip route static
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities affecting static route configuration and behavior, including  ip route/ipv6 route
+    statements, floating static routes, default gateway (ip default-gateway),  recursive static routes, and static route interaction
+    with VRF inter-route leaking. Use  for bugs where manually configured routes fail to install, cause RIB/FIB inconsistency,  or
+    exhibit incorrect next-hop resolution. Do NOT use for dynamic routing protocol issues—use  the appropriate RTE_OSPF/EIGRP/BGP
+    label instead.
+- label: RTE_OSPFv2
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^router\s+ospf\b
+    - \bip\s+ospf\b
+    show_cmds:
+    - show ip ospf
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in OSPF version 2 (IPv4) including LSA processing, adjacency  formation/teardown,
+    SPF calculation, network statement handling, area configuration,  and OSPF packet parsing (Hello, DBD, LSR, LSU, LSAck).
+    Use for OSPFv2-specific crashes,  memory leaks in OSPF processes, or adjacency instability. Do NOT use for OSPFv3 (IPv6)—use  RTE_OSPFv3.
+    Do NOT use for OSPF-related route-maps—use RTE_Redistribution_PBR.
+- label: RTE_OSPFv3
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^router\s+ospfv3\b
+    - ^ipv6\s+router\s+ospf\b
+    show_cmds:
+    - show ospfv3
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in OSPF version 3 (IPv6 and dual-stack address-families) including  OSPFv3 adjacency
+    issues, IPsec authentication for OSPFv3, address-family configuration  (ipv4/ipv6 under ospfv3), and OSPFv3-specific packet
+    processing. Use when the bug explicitly  involves OSPFv3 or "router ospfv3" configuration. Do NOT use for IPv4-only OSPF—use  RTE_OSPFv2.
+    The key differentiator is the protocol version and IPv6/dual-stack context.
+- label: RTE_EIGRP
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^router\s+eigrp\b
+    - ^\s*ip\s+eigrp\b
+    - ^interface.*\n.*\s+ip\s+eigrp\b
+    show_cmds:
+    - show ip eigrp neighbors
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Enhanced Interior Gateway Routing Protocol including  DUAL algorithm processing,
+    neighbor adjacency, distribute-list/route-map filtering,  feasible successor selection, query/reply storms, EIGRP OTP
+    (Over-the-Top), named EIGRP  mode, and stub routing. Use for EIGRP-specific CPU spikes, topology table corruption,  or
+    distribute-list misbehavior. Do NOT use for generic ECMP issues unless EIGRP-specific.  Do NOT use for route redistribution
+    into/from EIGRP—use RTE_Redistribution_PBR.
+- label: RTE_BGP
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^router\s+bgp\b
+    show_cmds:
+    - show ip bgp summary
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Border Gateway Protocol including UPDATE/OPEN/KEEPALIVE  message processing,
+    path attribute handling (AS_PATH, communities, RPKI), address-family  operations (VPNv4, EVPN, L2VPN), confederation,
+    route-reflector behavior, and BGP session  establishment/teardown. Use for BGP process crashes, route injection attacks,
+    or  memory corruption from malformed BGP messages. Do NOT use for BGP route-map/policy  issues—use RTE_Redistribution_PBR.
+    Do NOT use for BFD-triggered BGP failover—use RTE_BFD.
+- label: RTE_BFD
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^\s*bfd\s+(interval|template)\b
+    - ip route .* bfd
+    - ipv6 route .* bfd
+    - ^interface.*\n.*\s+bfd\s+interval
+    show_cmds:
+    - show bfd neighbors
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Bidirectional Forwarding Detection protocol including  BFD session state machine,
+    echo mode, interval/multiplier processing, BFD template  configuration, and BFD interaction with routing protocols (fall-over
+    bfd). Use for  BFD session flapping, incorrect failure detection, BFD/NAT interaction bugs, or  incomplete BFD logging.
+    Do NOT use for the routing protocol that BFD protects—if  BGP goes down due to BFD, label as RTE_BFD only if BFD misbehaved;
+    use RTE_BGP if  BGP itself is the root cause.
+- label: RTE_Redistribution_PBR
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^route-map\b
+    - ^redistribute\b
+    show_cmds:
+    - show route-map
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in route manipulation mechanisms including route-maps  (match/set clauses), redistribute
+    commands between protocols, Policy-Based Routing  (ip policy route-map), prefix-list application, and route tagging/filtering.
+    Use  for bugs where route-map logic fails, PBR drops traffic incorrectly, redistribution  causes routing loops, or set
+    community/next-hop operations malfunction. Do NOT use  for protocol-specific issues—this label is for the policy/redistribution
+    layer itself.
+- label: RTE_CEF
+  domain: L3 Routing
+  presence:
+    config_regex:
+    - ^ip\s+cef\b
+    - ^ipv6\s+cef\b
+    show_cmds:
+    - show ip cef
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Cisco Express Forwarding (data-plane packet switching)  including FIB table programming,
+    adjacency resolution, CEF load-balancing, punt/inject  path issues, and RIB-to-FIB synchronization failures. Use for bugs
+    where forwarding  behavior diverges from the routing table, CEF adjacency shows "glean" unexpectedly,  or IPv4/IPv6 packet
+    processing causes crashes in the forwarding path. Do NOT use for  control-plane routing protocol issues—CEF is strictly
+    the data-plane forwarding engine.
+- label: FHRP_HSRP
+  domain: L3/FHRP
+  presence:
+    config_regex:
+    - ^\s*standby\s+\d+\b
+    - ^standby\s+version\b
+    show_cmds:
+    - show standby
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Hot Standby Router Protocol (Cisco-proprietary FHRP)  including Active/Standby
+    state machine, virtual IP/MAC handling, HSRP version 1/2  differences, HSRP group preemption, authentication, tracking
+    objects, and HSRPv6  for IPv6. Use for HSRP state flapping, VIP traffic punt issues, or HSRP/NAT/crypto  interaction bugs.
+    Do NOT use for VRRP (standards-based)—use FHRP_VRRP. Do NOT use  for GLBP (load-balancing FHRP)—use FHRP_GLBP.
+- label: FHRP_VRRP
+  domain: L3/FHRP
+  presence:
+    config_regex:
+    - ^\s*vrrp\s+\d+\b
+    show_cmds:
+    - show vrrp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Virtual Router Redundancy Protocol (IEEE standard FHRP)  including Master/Backup
+    state transitions, VRRP advertisement processing, virtual MAC  (0000.5e00.01xx), priority/preemption, VRRP tracking (including
+    OMP tracking for  SD-WAN), and VRRPv3 for IPv6. Use for VRRP failover failures, delayed state changes,  or traffic blackholing
+    after VRRP transition. Do NOT use for HSRP—use FHRP_HSRP.  The key differentiator is VRRP uses "vrrp" commands, HSRP uses
+    "standby" commands.
+- label: FHRP_GLBP
+  domain: L3/FHRP
+  presence:
+    config_regex:
+    - ^\s*glbp\s+\d+\b
+    show_cmds:
+    - show glbp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Gateway Load Balancing Protocol (Cisco-proprietary  load-balancing FHRP) including
+    Active Virtual Gateway (AVG) election, Active Virtual  Forwarder (AVF) weighting, GLBP authentication (plaintext/MD5),
+    redirect timer  processing, and forwarder MAC distribution. Use for GLBP AVG takeover attacks,  weighting manipulation,
+    or DoS via malformed GLBP packets. Do NOT use for HSRP  or VRRP—GLBP is distinguished by its multi-forwarder load-balancing
+    architecture.
+- label: IP_DHCP_Server
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+dhcp\s+pool\b
+    - ^ipv6\s+dhcp\s+pool\b
+    show_cmds:
+    - show ip dhcp binding
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in the IOS-XE DHCP server functionality (ip dhcp pool),  including DORA message
+    processing, address pool management, lease database operations,  option 82 handling, and DHCP binding table corruption.
+    Use when the router/switch  is acting as the DHCP server itself. Do NOT use for DHCP relay (ip helper-address)—use  IP_DHCP_Relay.
+    Do NOT use for DHCP snooping security—use SEC_DHCP_Snooping.
+- label: IP_DHCP_Relay
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+helper-address\b
+    - ^ipv6\s+dhcp\s+relay\b
+    show_cmds:
+    - show running-config | sec (dhcp|helper)
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in DHCP relay agent functionality (ip helper-address),  including relay packet forwarding,
+    giaddr insertion, Option 82 (relay agent information)  insertion/processing, helper-address ordering, and broadcast-to-unicast
+    conversion.  Use when the switch/router forwards DHCP between clients and a remote DHCP server.  Do NOT use for local
+    DHCP server issues—use IP_DHCP_Server. Do NOT use for DHCP  snooping—use SEC_DHCP_Snooping.
+- label: IP_NAT
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+nat\s+(inside|outside|pool|translation)\b
+    show_cmds:
+    - show ip nat translations
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Network Address Translation including static NAT,  dynamic NAT, PAT/NAT overload,
+    NAT ALG (Application Layer Gateway) processing for  DNS/H.323/SIP/FTP, NAT translation table management, and NAT rate
+    limiting. Use  for NAT traversal bypasses (NAT Slipstreaming), ALG-induced crashes, or translation  table exhaustion.
+    Do NOT use for CGNAT/LSN on service provider platforms unless  IOS-XE specific. Do NOT use for NAT interaction with other
+    features—label the  primary affected feature.
+- label: IP_NHRP_DMVPN
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+nhrp\s+(map|network-id|nhs)\b
+    show_cmds:
+    - show ip nhrp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Next Hop Resolution Protocol and Dynamic Multipoint  VPN, including NHRP registration/resolution,
+    NHS (Next Hop Server) operations,  spoke-to-spoke tunnel establishment, mGRE interface handling, NHRP authentication,  and
+    DMVPN Phase 1/2/3 shortcut switching. Use for NHRP packet parsing bugs,  tunnel interface crashes, or spoke registration
+    failures. Do NOT use for generic  IPsec/GRE issues without NHRP context—use appropriate crypto or tunnel labels.
+- label: IP_WCCP
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+wccp\b
+    show_cmds:
+    - show ip wccp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Web Cache Communication Protocol including WCCP  service group formation, redirection
+    methods (GRE/L2), hash assignment, cache  engine communication, and WCCP packet processing. Use for WCCP service disruption,  incorrect
+    traffic redirection, or WCCP-induced CPU spikes. Do NOT use for generic  web proxy or caching issues—WCCP is specifically
+    the Cisco protocol for router-to-cache  communication.
+- label: IP_Unnumbered
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+unnumbered\b
+    show_cmds:
+    - show running-config | sec ip unnumbered
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IP unnumbered interface configuration where an  interface borrows its IP address
+    from another interface (ip unnumbered Loopback0).  Use for routing/forwarding issues specific to unnumbered interfaces,
+    ARP behavior  on unnumbered links, or point-to-point interface addressing problems. Do NOT use  for general interface
+    IP addressing—this is specifically for the address-borrowing  mechanism.
+- label: IP_PrefixList
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+prefix-list\b
+    - ^ipv6\s+prefix-list\b
+    show_cmds:
+    - show ip prefix-list
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IP prefix-list configuration and processing, including  prefix-list sequence
+    numbering, ge/le length matching, prefix-list application in  route-maps and distribute-lists, and prefix-list memory
+    consumption. Use for bugs  where prefix-list matching fails, causes unexpected permit/deny behavior, or  impacts routing
+    protocol filtering. Do NOT use for ACL issues—use SEC_PACL_VACL.  Do NOT confuse with route-map issues—use RTE_Redistribution_PBR
+    if the route-map  itself is the problem.
+- label: MCAST_PIM
+  domain: Multicast
+  presence:
+    config_regex:
+    - ^ip\s+pim\s
+    - ^ipv6\s+pim\s
+    show_cmds:
+    - show ip pim neighbor
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Protocol Independent Multicast (PIM) including  PIM-SM/PIM-DM/PIM-SSM/BiDir-PIM
+    operations, PIM neighbor discovery, Register/Join/Prune  message processing, RP (Rendezvous Point) election and communication,
+    multicast  routing table (mroute) management, and SPT switchover. Use for PIM packet parsing  crashes, RP reachability
+    issues, or multicast tree construction failures. Do NOT  use for IGMP snooping—use MCAST_IGMP_MLD_Snoop. Do NOT use for
+    mDNS—that is a  different protocol entirely.
+- label: MCAST_IGMP_MLD_Snoop
+  domain: Multicast
+  presence:
+    config_regex:
+    - ^ip\s+igmp\s+snooping\b
+    - ^ipv6\s+mld\s+snooping\b
+    show_cmds:
+    - show ip igmp snooping
+    - show ipv6 mld snooping
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IGMP Snooping (IPv4) and MLD Snooping (IPv6) at  Layer 2, including snooping
+    querier behavior, group membership tracking, multicast  MAC address programming, mrouter port learning, and snooping-induced
+    flooding  behavior. Use for L2 multicast optimization bugs, snooping table corruption, or  querier election issues. Do
+    NOT use for L3 PIM operations—use MCAST_PIM. Do NOT  use for IGMP on routed interfaces—this label is specifically for
+    L2 snooping.
+- label: MCAST_SSM
+  domain: Multicast
+  presence:
+    config_regex:
+    - \bssm-map\b
+    show_cmds:
+    - show running-config | inc ssm-map
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Source-Specific Multicast (SSM) including SSM mapping  (ssm-map), IGMPv3/MLDv2
+    source filtering, (S,G) channel subscription, and SSM  range configuration (232.0.0.0/8 for IPv4). Use for bugs where
+    SSM source validation  fails, SSM-map DNS lookups cause issues, or IGMPv3 source-include reports are  mishandled. Do NOT
+    use for ASM (Any-Source Multicast) or generic PIM—use MCAST_PIM.  SSM is distinguished by requiring explicit (S,G) joins
+    rather than (*,G).
+- label: QOS_MQC_ClassPolicy
+  domain: QoS
+  presence:
+    config_regex:
+    - ^class-map\b
+    - ^policy-map\b
+    - ^\s*service-policy\b
+    show_cmds:
+    - show policy-map interface
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Modular QoS CLI (MQC) framework, including class-map  match criteria, policy-map
+    actions (police/shape/queue/set), service-policy  attachment to interfaces/VLANs/control-plane, hierarchical QoS (HQoS),
+    and MQC  interaction with NBAR/AVC classification. Use for policy-map application failures,  incorrect traffic classification,
+    service-policy memory leaks, or MQC CLI parsing  bugs. Do NOT use for pure marking/trust issues—use QOS_Marking_Trust.
+    Do NOT use  for pure queuing issues—use QOS_Queuing_Scheduling. MQC is the configuration  framework; marking and queuing
+    are specific actions within it.
+- label: QOS_Marking_Trust
+  domain: QoS
+  presence:
+    config_regex:
+    - ^mls\s+qos\s+trust\b
+    - ^mls\s+qos\b
+    show_cmds:
+    - show mls qos interface
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in QoS marking and trust behavior, including DSCP/CoS/IP  Precedence marking via
+    set commands, trust boundaries (mls qos trust), platform  marker-statistics, ingress trust of incoming markings, and remarking
+    for specific  traffic types (SSH DSCP, ARP priority). Use for incorrect DSCP/CoS values being  set, trust configuration
+    not being honored, or marking not applied to specific  traffic types (e.g., NETCONF not respecting ip ssh dscp). Do NOT
+    use for queuing  behavior—use QOS_Queuing_Scheduling.
+- label: QOS_Queuing_Scheduling
+  domain: QoS
+  presence:
+    config_regex:
+    - \bpriority-queue\b
+    - \bwrr-queue\b
+    - \bbandwidth\b
+    show_cmds:
+    - show policy-map interface
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in egress queuing and scheduling mechanisms, including  priority queuing, WRR/CBWFQ/LLQ
+    scheduling, queue depth/threshold configuration  (WRED/tail-drop), queue-limit settings, shaped round-robin, and hardware
+    queue  programming on ASICs. Use for traffic not being scheduled correctly, queue  starvation, incorrect queue assignment,
+    or platform-specific queue show command  issues (show platform hardware fed qos queue). Do NOT use for ingress classification  or
+    marking—use QOS_MQC_ClassPolicy or QOS_Marking_Trust.
+- label: SEC_8021X
+  domain: Security
+  presence:
+    config_regex:
+    - ^dot1x\s
+    - ^aaa\s+authentication\s+dot1x\b
+    show_cmds:
+    - show dot1x all
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IEEE 802.1X port-based network access control, including  EAP (Extensible Authentication
+    Protocol) processing, RADIUS communication for dot1x,  authenticator state machine (sessmgrd process), supplicant handling,
+    re-authentication  timers, and dot1x-related memory leaks or authentication failures. Use for EAP method  issues, authentication
+    session failures, or dot1x process crashes. Do NOT use for  MAB-only issues—use SEC_MAB. Do NOT use for RADIUS server
+    issues—use MGMT_AAA_TACACS_RADIUS.
+- label: SEC_MAB
+  domain: Security
+  presence:
+    config_regex:
+    - ^mab\b
+    show_cmds:
+    - show authentication sessions
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in MAC Authentication Bypass, where the endpoint's MAC  address is used as credentials
+    for RADIUS authentication when 802.1X fails or is  unavailable. Use for MAB-specific failures such as MAC not being learned,
+    MAB not  initiating after dot1x timeout, RADIUS requests not being sent for MAB, or  access-session control-direction
+    issues. Do NOT use for dot1x EAP issues—use SEC_8021X.  MAB is the fallback mechanism; dot1x is the primary authentication
+    method.
+- label: SEC_PortSecurity
+  domain: Security
+  presence:
+    config_regex:
+    - ^switchport\s+port-security\b
+    show_cmds:
+    - show port-security
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in switchport port-security feature, including MAC address  limiting, sticky MAC
+    learning, violation actions (protect/restrict/shutdown), secure  MAC address aging, and port-security interaction with
+    other features. Use for bugs  where port-security fails to enforce MAC limits, causes unexpected err-disable, or  conflicts
+    with dot1x/MAB configuration. Do NOT use for 802.1X authentication—use  SEC_8021X. Port-security is L2 MAC-based; dot1x
+    is L2/L3 identity-based.
+- label: SEC_DHCP_Snooping
+  domain: Security
+  presence:
+    config_regex:
+    - ^ip\s+dhcp\s+snooping\b
+    show_cmds:
+    - show ip dhcp snooping
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in DHCP snooping security feature, including trusted/untrusted  port classification,
+    DHCP binding database creation, rate limiting of DHCP packets,  Option 82 insertion validation, and DHCP snooping interaction
+    with endpoint analytics.  Use for DHCP snooping DoS vulnerabilities, binding table corruption, or snooping-induced  queue
+    wedges. Do NOT use for DHCP relay (ip helper-address)—use IP_DHCP_Relay. Do NOT  use for DHCP server pool issues—use IP_DHCP_Server.
+- label: SEC_IP_Source_Guard
+  domain: Security
+  presence:
+    config_regex:
+    - ^ip\s+verify\s+source\b
+    show_cmds:
+    - show ip verify source
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IP Source Guard (IPSG) and the underlying SISF  (Switch Integrated Security Features)
+    / Device Tracking infrastructure, including  IP-MAC binding enforcement, device-tracking policy, binding table management,
+    SISF  theft detection, and APIPA/link-local address handling. Use for IPSG bypass, SISF  binding table issues, or device-tracking
+    failures. Do NOT use for DHCP snooping  binding creation—use SEC_DHCP_Snooping. IPSG enforces bindings; DHCP snooping
+    creates them.
+- label: SEC_DAI
+  domain: Security
+  presence:
+    config_regex:
+    - ^ip\s+arp\s+inspection\b
+    show_cmds:
+    - show ip arp inspection
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Dynamic ARP Inspection, including ARP packet validation  against DHCP snooping
+    bindings, ARP ACLs for static entries, trusted/untrusted interface  classification for ARP, rate limiting of ARP packets,
+    and DAI logging. Use for ARP  spoofing protection failures, DAI-induced drops of legitimate ARP, or DAI interaction  with
+    high-ARP environments. Do NOT use for general ARP issues—DAI specifically validates  ARP against known IP-MAC bindings.
+    Do NOT confuse with DAD (Dual Active Detection) for  StackWise Virtual.
+- label: SEC_StormControl
+  domain: Security
+  presence:
+    config_regex:
+    - ^storm-control\b
+    show_cmds:
+    - show storm-control
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in storm control feature that rate-limits broadcast,  multicast, and unknown unicast
+    traffic on switchports to prevent network storms.  Use for bugs where storm control thresholds are not enforced, false
+    positives trigger  err-disable, or storm control fails to suppress actual broadcast storms. Do NOT use  for CoPP (control-plane
+    policing)—use SEC_CoPP. Storm control operates on data-plane  traffic at the port level; CoPP protects the CPU from control-plane
+    traffic.
+- label: SEC_CoPP
+  domain: Security
+  presence:
+    config_regex:
+    - ^control-plane\b
+    - ^policy-map\s+control-plane\b
+    show_cmds:
+    - show policy-map control-plane
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Control Plane Policing, including system-defined CoPP  policies, CPU queue rate
+    limiting, punt-path protection, and policy-map control-plane  configuration. Use for bugs where CoPP fails to protect
+    the CPU from traffic floods,  CoPP queue statistics issues, or CoPP-induced drops of legitimate control traffic.  Do NOT
+    use for data-plane storm control—use SEC_StormControl. Do NOT use for generic  CLI/web UI command injection—CoPP is specifically
+    about protecting the control-plane  from traffic-based DoS.
+- label: SEC_PACL_VACL
+  domain: Security
+  presence:
+    config_regex:
+    - ^ip\s+access-list\b
+    - ^ipv6\s+access-list\b
+    - \bvlan\s+access-map\b
+    show_cmds:
+    - show access-lists
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Port ACLs, VLAN ACLs, and Router ACLs (ip access-list)  including ACL programming
+    in hardware, TCAM resource exhaustion, ACL bypass due to  configuration conflicts, and ACL interaction with other features
+    (REP, IPSG). Use  for ACL enforcement failures, incorrect permit/deny behavior, or hardware ACL  programming errors. Do
+    NOT use for prefix-lists—use IP_PrefixList. Do NOT use for  route-maps—use RTE_Redistribution_PBR. ACLs filter traffic;
+    prefix-lists filter routes.
+- label: CTS_Base
+  domain: TrustSec
+  presence:
+    config_regex:
+    - ^cts\s+(enable|role-based|authorization|sxp)\b
+    show_cmds:
+    - show cts
+    - show cts role-based
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Cisco TrustSec core functionality, including Security  Group Tag (SGT) assignment,
+    SGT propagation via inline tagging (CMD), SGACL  (Security Group ACL) enforcement, role-based access control policy download
+    from  ISE, and TrustSec CLI parser operations. Use for SGT assignment failures, SGACL  policy not being applied (especially
+    on FlexConnect APs), or TrustSec CLI-induced  crashes. Do NOT use for SXP protocol issues—use CTS_SXP. CTS_Base covers
+    the  enforcement plane; CTS_SXP covers the control-plane propagation protocol.
+- label: CTS_SXP
+  domain: TrustSec
+  presence:
+    config_regex:
+    - ^cts\s+sxp\b
+    show_cmds:
+    - show cts sxp connections
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in SGT Exchange Protocol (SXP), the TCP-based control  protocol that propagates
+    IP-to-SGT bindings between TrustSec-aware and non-aware  devices. Use for SXP connection failures, SGT binding overwrite
+    issues (where SXP  summary bindings incorrectly override more specific L3IF/static bindings), SXP  peer negotiation bugs,
+    or malformed SXP TLV processing. Do NOT use for inline  SGT tagging (CMD)—use CTS_Base. SXP is specifically the out-of-band
+    binding  propagation mechanism.
+- label: MGMT_SNMP
+  domain: Management
+  presence:
+    config_regex:
+    - ^snmp-server\b
+    show_cmds:
+    - show snmp user
+    - show snmp group
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Simple Network Management Protocol (SNMP) agent  functionality, including SNMPv1/v2c
+    community string processing, SNMPv3 USM  authentication/encryption, SNMP trap generation, MIB walk/GET/SET operations,  SNMP
+    ACL enforcement, and SNMP-induced device crashes. Use for SNMP parser bugs,  unauthorized MIB access, or SNMP DoS vulnerabilities.
+    Do NOT use for SNMP as  the access method to another feature's data—label the underlying feature instead  (e.g., LLDP
+    neighbor table accessed via SNMP = MGMT_LLDP_CDP).
+- label: MGMT_Syslog
+  domain: Management
+  presence:
+    config_regex:
+    - ^logging\s+(host|buffered)\b
+    show_cmds:
+    - show logging
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in syslog message generation, formatting, transport,  and logging infrastructure,
+    including syslog server configuration, logging  buffer/console/monitor destinations, logging source-interface, severity
+    filtering,  and syslog message parsing. Use for bugs where syslog messages are lost, malformed,  cause memory leaks, or
+    syslog transport (UDP/TCP/TLS) fails. Do NOT use just  because an advisory mentions "%SYSLOG" messages—syslog is the logging
+    mechanism,  not the root cause feature.
+- label: MGMT_NetFlow_FNF
+  domain: Management
+  presence:
+    config_regex:
+    - ^flow\s+(exporter|monitor|record)\b
+    show_cmds:
+    - show flow monitor
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in NetFlow v5/v9, Flexible NetFlow (FNF), and flow  monitoring infrastructure, including
+    flow record/exporter/monitor configuration,  flow cache management, sampler intervals, NBAR-based application visibility,  and
+    CFT (Common Flow Table) operations. Use for NetFlow export failures, flow  cache corruption, FNF configuration loss after
+    reload, or NBAR/AVC-related crashes.  Do NOT use for model-driven telemetry—that is a separate streaming mechanism.
+- label: MGMT_SPAN_ERSPAN
+  domain: Management
+  presence:
+    config_regex:
+    - ^monitor\s+session\b
+    - \berspan\b
+    show_cmds:
+    - show monitor session
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Switched Port Analyzer (SPAN), Remote SPAN (RSPAN),  and Encapsulated RSPAN (ERSPAN)
+    traffic mirroring, including monitor session  configuration, source/destination port behavior, ERSPAN encapsulation/decapsulation,  GRE
+    transport for ERSPAN, and mirroring to IOx containers (CyberVision). Use for  SPAN session failures, destination port
+    stops transmitting, or ERSPAN tunnel issues.  Do NOT use for EPC (Embedded Packet Capture)—that is a separate capture
+    mechanism  though often used alongside SPAN.
+- label: MGMT_LLDP_CDP
+  domain: Management
+  presence:
+    config_regex:
+    - ^lldp\s+run\b
+    - ^cdp\s+run\b
+    show_cmds:
+    - show lldp neighbors
+    - show cdp neighbors
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Link Layer Discovery Protocol (LLDP, IEEE 802.1AB)  and Cisco Discovery Protocol
+    (CDP), including TLV parsing, neighbor table management,  LLDP-MED for VoIP, CDP power negotiation (PoE), and protocol-induced
+    device reloads.  Use for LLDP/CDP frame injection attacks, neighbor table corruption, or parser  crashes when processing
+    malformed discovery frames. Do NOT use for device discovery  in network management—this label is for the protocol itself
+    on IOS-XE devices.
+- label: MGMT_AAA_TACACS_RADIUS
+  domain: Management
+  presence:
+    config_regex:
+    - ^aaa\s+new-model\b
+    - ^tacacs-server\b
+    - ^radius-server\b
+    show_cmds:
+    - show aaa servers
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in AAA (Authentication, Authorization, Accounting)  framework, TACACS+ client, and
+    RADIUS client functionality on IOS-XE, including  aaa authentication/authorization/accounting method lists, TACACS+/RADIUS
+    server  communication, server group failover, CoA (Change of Authorization) processing,  and AAA attribute handling. Use
+    for AAA bypass vulnerabilities, RADIUS/TACACS+  packet processing bugs, or server unreachable handling issues. Do NOT
+    use for  802.1X/MAB authentication—use SEC_8021X or SEC_MAB. AAA is the backend framework;  dot1x/MAB are the port-level
+    authentication methods.
+- label: MGMT_SSH_HTTP
+  domain: Management
+  presence:
+    config_regex:
+    - ^ip\s+ssh\b
+    - ^ip\s+http\b
+    show_cmds:
+    - show ip ssh
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in SSH server and HTTP/HTTPS web UI management interfaces  on IOS-XE devices, including
+    SSH version negotiation, SSH key exchange, SSH session  management, HTTP/HTTPS server (ip http server), WebUI authentication,
+    RESTCONF/NETCONF-YANG  transport, and web UI command injection. Use for SSH DoS, web UI privilege escalation,  or management
+    session vulnerabilities. Do NOT use for SSH as a transport to other  features—label the feature being accessed. Do NOT
+    use for ISE/DCNM/DNA Center web  UIs—those are separate products.
+- label: MGMT_NTP
+  domain: Management
+  presence:
+    config_regex:
+    - ^ntp\s+server\b
+    - ^clock\s+timezone\b
+    show_cmds:
+    - show ntp associations
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Network Time Protocol client and server functionality,  including NTP association
+    establishment, NTP authentication (MD5/SHA), NTP access  control, stratum hierarchy, and clock synchronization. Use for
+    NTP packet parsing  bugs, NTP authentication bypass, time synchronization failures, or NTP-induced  device instability.
+    Do NOT confuse with PTP (Precision Time Protocol)—use L2_PTP_gPTP  for IEEE 1588. NTP operates at Layer 7; PTP operates
+    at Layer 2 with hardware  timestamping.
+- label: HA_StackWise
+  domain: HA
+  presence:
+    config_regex:
+    - ^switch\s+\d+\s+priority\b
+    - \bstackwise\b
+    show_cmds:
+    - show switch
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in StackWise and StackWise Virtual (SVL) technologies,  including stack ring/data
+    link communication, SVL control link negotiation,  Dual Active Detection (DAD) link monitoring, stack member election
+    (Active/Standby),  stack MAC address handling, and cross-stack feature behavior (PTP, BFD). Use for  SVL interface flaps
+    causing BFD failures, DAD link status issues, stack member  role transitions, or unexpected MAC addresses learned via
+    management ports. Do  NOT confuse DAD (Dual Active Detection) with DAI (Dynamic ARP Inspection).
+- label: HA_StackPower
+  domain: HA
+  presence:
+    config_regex:
+    - ^stack-power\b
+    show_cmds:
+    - show stack-power
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in StackPower technology for Catalyst switches, including  power stack ring topology,
+    power budget sharing/negotiation between stack members,  UPoE/UPoE+ mode transitions, PoE power allocation from stack
+    power pool, and  power supply/fan tray detection in stacked environments. Use for slow PoE power-up  due to ring negotiation,
+    false power supply removal messages during HA events, or  UPoE enablement issues. Do NOT use for standalone switch PoE—this
+    is specifically  for power sharing across stacked switches.
+- label: HA_Redundancy_SSO
+  domain: HA
+  presence:
+    config_regex:
+    - ^redundancy\s+mode\s+sso\b
+    show_cmds:
+    - show redundancy
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Stateful Switchover (SSO) and In-Service Software  Upgrade (ISSU) redundancy
+    mechanisms, including Active/Standby RP synchronization,  bulk-sync and incremental-sync processes, switchover triggers,
+    fast reload feature,  and RP failover behavior. Use for SSO sync failures, switchover-induced outages,  ISSU upgrade failures,
+    or fast reload code execution vulnerabilities. Do NOT use  for StackWise Virtual—use HA_StackWise. SSO operates between
+    redundant RPs within  a single chassis or chassis pair; StackWise operates between separate switch units.
+- label: HA_NSF_GR
+  domain: HA
+  presence:
+    config_regex:
+    - \bnsf\b
+    - graceful-restart
+    show_cmds:
+    - show ip ospf
+    - show ip bgp
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Non-Stop Forwarding (NSF) and Graceful Restart (GR)  mechanisms that allow control-plane
+    recovery without data-plane interruption. Use  for BGP Graceful Restart (GR-capable/GR-aware) timer issues, NSF-induced
+    traffic  black-holing during RP switchover, stale route handling, or GR-helper mode failures.  This label covers the routing
+    protocol extensions (BGP GR, OSPF NSF, EIGRP NSF)  that work with HA_Redundancy_SSO to minimize traffic loss during failover.
+    Do NOT  use for general BGP issues—use RTE_BGP unless GR/NSF is specifically mentioned.
+- label: SYS_Boot_Upgrade
+  domain: System
+  presence:
+    config_regex:
+    - ^boot\s+system\b
+    - ^software\s+install\b
+    show_cmds:
+    - show version
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IOS-XE boot process, image verification, software  upgrade/install mechanisms,
+    and ROMMON operations, including UEFI secure boot  bypass, boot script tampering, install mode vs bundle mode transitions,
+    SMU  (Software Maintenance Update) installation, and image signature verification.  Use for arbitrary code execution during
+    boot, unsigned image loading, or upgrade  process failures. Do NOT use for general device crashes—this is specifically
+    for  the boot/upgrade lifecycle. Do NOT use for PnP (Plug-and-Play)—that is a  provisioning feature, not boot/upgrade.
+- label: SYS_Licensing_Smart
+  domain: System
+  presence:
+    config_regex:
+    - ^license\s+smart\b
+    - ^telemetry\b
+    show_cmds:
+    - show license all
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Cisco Smart Licensing infrastructure on IOS-XE,  including Smart Account/Virtual
+    Account communication, CSSM (Cisco Smart Software  Manager) connectivity, CSLU (Cisco Smart License Utility) interaction,
+    SSM On-Prem,  license reservation, SLR (Specific License Reservation), and the SACRcvWQ process.  Use for Smart Licensing
+    registration failures, licensing VRF source-interface  issues, or SACRcvWQ process crashes. Do NOT use for traditional
+    PAK-based licensing  or RTU (Right-to-Use) licensing—this is specifically for the Smart Licensing  infrastructure.
+- label: IF_Physical
+  domain: Interfaces
+  presence:
+    config_regex:
+    - ^interface\s+(GigabitEthernet|TenGigabitEthernet)\b
+    show_cmds:
+    - show interfaces status
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in physical interface behavior on IOS-XE switches and  routers, including Ethernet/GigabitEthernet/TenGigabitEthernet
+    port state transitions,  SFP/transceiver detection, PHY-level operations, interface error counters, and  carrier detect.
+    Use for physical layer issues such as interface flapping, CRC errors  at the hardware level, transceiver compatibility
+    problems, or PHY register  configuration bugs. Do NOT use for logical interfaces (SVIs, loopbacks, tunnels).  Do NOT use
+    for speed/duplex negotiation—use IF_Speed_Duplex.
+- label: IF_PortTemplates
+  domain: Interfaces
+  presence:
+    config_regex:
+    - ^template\s+\S+
+    show_cmds:
+    - show running-config | sec template
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in interface template functionality, including static  templates (source template),
+    autoconf dynamic templates (SWITCH_INTERFACE_TEMPLATE),  built-in templates for device profiling, template binding/unbinding,
+    and IBNS 2.0  policy-map templates for authentication. Use for template application failures,  autoconf misclassification,
+    template configuration not clearing after removal, or  YANG/NETCONF gaps for template commands. Do NOT use for service-policy
+    QoS—use  QOS_MQC_ClassPolicy. Templates define interface configurations; service-policies  define traffic treatment.
+- label: IF_Speed_Duplex
+  domain: Interfaces
+  presence:
+    config_regex:
+    - \bspeed\b
+    - \bduplex\b
+    - negotiation\s+auto
+    show_cmds:
+    - show interfaces
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in speed and duplex negotiation, including auto-negotiation  (IEEE 802.3 clause
+    28/37/73), forced speed/duplex configuration, mGig (Multi-Gigabit  2.5G/5G) negotiation, duplex mismatch detection, and
+    PHY-specific negotiation  behavior with different NIC vendors (Intel i219-LM, Broadcom, etc.). Use for  incorrect negotiation
+    results, duplex mismatch causing packet loss, or speed-specific  traffic drops. Do NOT use for general interface errors—this
+    is specifically for  the negotiation/speed-setting mechanism.
+- label: APP_IOx
+  domain: Application Hosting
+  presence:
+    config_regex:
+    - ^iox$
+    - ^app-hosting\s+(deploy|activate|start)\b
+    - ^interface\s+AppGigabitEthernet\b
+    - ^interface\s+VirtualPortGroup\b
+    show_cmds:
+    - show iox
+    - show app-hosting list
+    - show app-hosting detail
+    - show running-config | include iox
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IOS-XE Application Hosting (IOx) framework, including  app-hosting container
+    lifecycle (install/activate/start/stop), AppGigabitEthernet  virtual NIC, guest shell, Docker container management on
+    Catalyst 9K, IOx process  (CAF/IOXman), app-resource allocation (CPU/memory/disk), and container networking  (trunk VLANs
+    to guest interfaces). Use for IOx container crashes, app-hosting  memory leaks (e.g., CyberVision), AppGig interface issues,
+    or container-to-host  communication failures. Do NOT use for DCNM/NDFC/DNA Center REST APIs—those are  separate management
+    platforms, not IOS-XE IOx.
+- label: WIRELESS_MDNS
+  domain: Wireless
+  description: Applies to vulnerabilities in the mDNS (Multicast DNS) Gateway feature on Wireless  LAN Controllers (WLC) and
+    IOS-XE wireless stacks (Embedded Wireless Controller).  Use for mDNS packet parsing bugs, mDNS gateway DoS, or service
+    discovery  vulnerabilities in a wireless context. This label is specifically to sequester  mDNS bugs that are often mislabeled
+    as DHCP, NTP, or PIM due to port/protocol  overlaps.
+  presence:
+    config_regex:
+    - ^mdns-sd\s+gateway\b
+    - ^wireless\s+mdns-bridging\b
+    show_cmds:
+    - show wireless mdns
+  docs:
+    anchors: []
+- label: MPLS_LDP
+  domain: MPLS
+  presence:
+    config_regex:
+    - ^mpls\s+ldp\b
+    - ^mpls\s+label\s+protocol\s+ldp\b
+    show_cmds:
+    - show mpls ldp neighbor
+    - show mpls ldp bindings
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Label Distribution Protocol (LDP) for MPLS, including LDP session establishment,
+    label binding/withdrawal, targeted LDP, and LDP-IGP synchronization. Use for bugs affecting LDP neighbor relationships,
+    label space management, or LDP DoS conditions. Do NOT use for MPLS forwarding issues unrelated to LDP signaling.
+- label: MPLS_STATIC
+  domain: MPLS
+  presence:
+    config_regex:
+    - ^mpls\s+static\s+binding\b
+    - ^\s*label\s+\d+\b
+    show_cmds:
+    - show mpls static binding
+    - show mpls forwarding-table
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in static MPLS label assignment, including manual label bindings, static cross-connects,
+    and static LSPs. Use for bugs where statically configured labels cause forwarding failures or security bypasses. Do NOT
+    use for LDP or RSVP-TE signaled labels.
+- label: MPLS_TE
+  domain: MPLS
+  presence:
+    config_regex:
+    - ^mpls\s+traffic-eng\b
+    - ^interface\s+Tunnel\d+.*tunnel\s+mode\s+mpls\b
+    show_cmds:
+    - show mpls traffic-eng tunnels
+    - show mpls traffic-eng topology
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in MPLS Traffic Engineering, including RSVP-TE signaling, explicit paths, bandwidth
+    constraints, fast-reroute (FRR), and auto-tunnel. Use for TE tunnel establishment failures, path computation issues, or
+    TE-related DoS. Do NOT use for basic MPLS forwarding without TE.
+- label: RTE_OSPF
+  domain: Routing
+  presence:
+    config_regex:
+    - ^router\s+ospf\b
+    - ^router\s+ospfv3\b
+    show_cmds:
+    - show ip ospf
+    - show ospfv3
+  docs:
+    anchors: []
+  description: Generic OSPF label covering both OSPFv2 and OSPFv3 when version is not specified. Applies to vulnerabilities
+    in OSPF protocol operations affecting any version. For version-specific issues, prefer RTE_OSPFv2 or RTE_OSPFv3. Use when
+    advisory mentions "OSPF" without specifying version.
+- label: RTE_ISIS
+  domain: Routing
+  presence:
+    config_regex:
+    - ^router\s+isis\b
+    - ^\s*isis\s+circuit-type\b
+    show_cmds:
+    - show isis neighbors
+    - show isis database
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in Intermediate System to Intermediate System (IS-IS) routing protocol, including
+    LSP processing, adjacency formation, area/level hierarchy, and IS-IS for MPLS TE. Use for bugs in IS-IS packet parsing,
+    flooding, or SPF calculation. Do NOT use for OSPF issues.
+- label: SEC_DHCP_SNOOP
+  domain: Security
+  presence:
+    config_regex:
+    - ^ip\s+dhcp\s+snooping\b
+    show_cmds:
+    - show ip dhcp snooping
+    - show ip dhcp snooping binding
+  docs:
+    anchors: []
+  description: Alias for SEC_DHCP_Snooping. Applies to DHCP snooping security feature vulnerabilities including binding table
+    manipulation, trust port bypass, rate limiting failures, and DHCP starvation attacks. Use when advisory uses "DHCP Snoop"
+    or "DHCP Snooping" terminology.
+- label: SEC_BGP_ROUTE_FILTERING
+  domain: Security
+  presence:
+    config_regex:
+    - ^ip\s+prefix-list\b.*neighbor
+    - ^route-map\b.*bgp
+    show_cmds:
+    - show ip bgp neighbors
+    - show ip prefix-list
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in BGP route filtering mechanisms including prefix-lists, route-maps, AS-path filters,
+    community filters, and RPKI validation for route origin security. Use for bugs that allow unauthorized route injection,
+    filter bypass, or route hijacking. Do NOT use for general BGP protocol issues.
+- label: QOS_POLICING
+  domain: QoS
+  presence:
+    config_regex:
+    - ^\s*police\s+(rate|cir|pir)\b
+    - ^\s*police\s+\d+\b
+    show_cmds:
+    - show policy-map interface
+    - show class-map
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in traffic policing (rate limiting) mechanisms, including single-rate/dual-rate
+    policers, token bucket algorithms, conform/exceed/violate actions. Use for bugs where traffic is not correctly rate-limited
+    or policed. Closely related to QOS_MQC_ClassPolicy.
+- label: QOS_Police_Priority
+  domain: QoS
+  presence:
+    config_regex:
+    - ^\s*priority\s+(level|percent)\b
+    - ^\s*bandwidth\s+remaining\b
+    show_cmds:
+    - show policy-map interface
+    - show queuing interface
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities affecting QoS priority queuing combined with policing, including priority queue
+    bandwidth enforcement, strict priority scheduling, and low-latency queuing (LLQ). Use when bug involves interaction between
+    priority scheduling and rate limiting.
+- label: SYS_Time_Range_Scheduler
+  domain: System
+  presence:
+    config_regex:
+    - ^time-range\b
+    - ^kron\s+policy-list\b
+    show_cmds:
+    - show time-range
+    - show kron schedule
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in time-range definitions and time-based schedulers, including periodic ACL activation,
+    Kron scheduler, and time-based access control. Use for bugs where time-based policies fail to activate/deactivate correctly.
+- label: VPN_IKEv2
+  domain: VPN
+  presence:
+    config_regex:
+    - ^crypto\s+ikev2\b
+    - ^crypto\s+ikev2\s+(profile|proposal|policy)\b
+    show_cmds:
+    - show crypto ikev2 sa
+    - show crypto ikev2 session
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IKEv2 protocol implementation, including IKE_SA_INIT, IKE_AUTH, CREATE_CHILD_SA
+    exchanges, certificate authentication, and EAP methods. Use for IKEv2-specific bugs. Do NOT use for IKEv1 or generic IPsec
+    issues.
+- label: MGMT_RPC_NETCONF
+  domain: Management
+  presence:
+    config_regex:
+    - ^netconf\s+ssh\b
+    - ^restconf\b
+    - ^gnmi\b
+    show_cmds:
+    - show netconf-yang sessions
+    - show platform software yang-management
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in NETCONF/RESTCONF/gRPC management interfaces, including XML/YANG parsing, RPC
+    operations, notification subscriptions, and programmable interface exploits. Use for bugs in network programmability interfaces.
+    Do NOT use for traditional CLI or SNMP.
+- label: SDWAN_UTD
+  domain: SD-WAN
+  presence:
+    config_regex:
+    - ^utd\s+engine\b
+    - ^policy\s+security\b.*utd
+    show_cmds:
+    - show utd engine standard status
+    - show sdwan utd dataplane
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in SD-WAN Unified Threat Defense (UTD) module, including Snort IPS engine, URL filtering,
+    AMP integration, and security policy enforcement on SD-WAN edge devices. Use for UTD-specific bugs on vEdge/cEdge platforms.
+- label: SDWAN_Filtering
+  domain: SD-WAN
+  presence:
+    config_regex:
+    - ^policy\s+data-policy\b
+    - ^policy\s+access-list\b
+    show_cmds:
+    - show sdwan policy access-list
+    - show sdwan policy data-policy
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in SD-WAN centralized packet filtering and access control, including data policy
+    ACL bypass, application-aware routing policy bypass, and SD-WAN security policy enforcement failures. Use for filter/ACL
+    bypass on SD-WAN fabric.
+- label: IP_SLA_TWAMP
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+sla\s+\d+\b
+    - ^ip\s+sla\s+responder\b
+    - ^ip\s+sla\s+twamp\b
+    show_cmds:
+    - show ip sla statistics
+    - show ip sla responder
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IP SLA (Service Level Agreement) probes and TWAMP (Two-Way Active Measurement
+    Protocol) responders, including probe processing, timestamp manipulation, and measurement protocol DoS. Use for performance
+    monitoring protocol bugs.
+- label: IP_Fragmentation
+  domain: IP Services
+  presence:
+    config_regex:
+    - ^ip\s+virtual-reassembly\b
+    - ^ipv6\s+virtual-reassembly\b
+    show_cmds:
+    - show ip virtual-reassembly
+    - show ipv6 virtual-reassembly
+  docs:
+    anchors: []
+  description: Applies to vulnerabilities in IPv4/IPv6 fragment reassembly, including Virtual Fragment Reassembly (VFR), fragment
+    offset attacks, overlapping fragment handling, and reassembly buffer exhaustion. Use for fragment-specific DoS or bypass
+    attacks.
