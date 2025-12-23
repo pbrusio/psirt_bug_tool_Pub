@@ -31,12 +31,15 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import pandas as pd
 
-# Adapter path - matches registry.yaml and transformers_inference.py pattern
-MLX_ADAPTER_PATH = "models/adapters/mlx_v1"
+# Get project root (where mlx_inference.py lives)
+PROJECT_ROOT = Path(__file__).parent
 
-# Low-RAM mode paths
-LOWRAM_CONFIG_PATH = "models/lowram_config.json"
-QUANTIZED_MODEL_PATH = "models/foundation-sec-8b-4bit"
+# Adapter path - matches registry.yaml and transformers_inference.py pattern
+MLX_ADAPTER_PATH = str(PROJECT_ROOT / "models/adapters/mlx_v1")
+
+# Low-RAM mode paths (absolute, based on project root)
+LOWRAM_CONFIG_PATH = PROJECT_ROOT / "models/lowram_config.json"
+QUANTIZED_MODEL_PATH = PROJECT_ROOT / "models/foundation-sec-8b-4bit"
 
 
 def detect_lowram_mode() -> bool:
@@ -53,12 +56,11 @@ def detect_lowram_mode() -> bool:
         return True
 
     # Check for config file (created by setup_mac_lowram.sh)
-    if Path(LOWRAM_CONFIG_PATH).exists():
+    if LOWRAM_CONFIG_PATH.exists():
         return True
 
-    # Check if quantized model exists but full model doesn't
-    # (user only ran low-RAM setup)
-    if Path(QUANTIZED_MODEL_PATH).exists():
+    # Check if quantized model exists
+    if QUANTIZED_MODEL_PATH.exists():
         return True
 
     return False
@@ -164,18 +166,18 @@ class MLXPSIRTLabeler:
             print("📉 Low-RAM mode detected (16GB Mac)")
             print(f"   Using 4-bit quantized model for reduced memory usage")
 
-            if not Path(QUANTIZED_MODEL_PATH).exists():
+            if not QUANTIZED_MODEL_PATH.exists():
                 raise FileNotFoundError(
                     f"Quantized model not found at {QUANTIZED_MODEL_PATH}. "
                     f"Run ./setup_mac_lowram.sh to create it."
                 )
 
-            self.model_id = QUANTIZED_MODEL_PATH
+            self.model_id = str(QUANTIZED_MODEL_PATH)
             self.adapter_path = None  # Quantized models don't use adapters
             self.use_cot = use_cot
 
             print(f"\n📥 Loading quantized model: {QUANTIZED_MODEL_PATH}")
-            self.model, self.tokenizer = load(QUANTIZED_MODEL_PATH)
+            self.model, self.tokenizer = load(str(QUANTIZED_MODEL_PATH))
             print("✅ Quantized model loaded (~65% accuracy, ~8GB RAM)")
 
         else:
