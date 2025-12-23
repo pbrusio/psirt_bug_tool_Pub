@@ -12,11 +12,12 @@ A comprehensive system for analyzing Cisco PSIRTs (Product Security Incident Res
 
 - Python 3.9+
 - Node.js 18+ (for frontend)
-- ~32GB RAM (for Foundation-Sec-8B model on Mac) or GPU with 16GB+ VRAM
+- **Mac:** 32GB RAM recommended (16GB supported with reduced accuracy)
+- **Linux:** GPU with 16GB+ VRAM, or CPU (slower)
 
 ### Setup
 
-**Option A: Mac (Apple Silicon M1/M2/M3)**
+**Option A: Mac (Apple Silicon M1/M2/M3 - 32GB+ RAM)**
 ```bash
 # One-time setup (~5 min)
 ./setup_mac_env.sh
@@ -41,6 +42,21 @@ nohup ./backend/run_server.sh > backend.log 2>&1 &
 # Start frontend
 cd frontend && npm install && npm run dev
 ```
+
+**Option C: Mac (Apple Silicon - 16GB RAM)**
+```bash
+# One-time setup (~15 min, downloads and quantizes model)
+./setup_mac_lowram.sh
+
+# Start backend (background)
+source venv_mac/bin/activate
+nohup ./backend/run_server.sh > backend.log 2>&1 &
+
+# Start frontend
+cd frontend && npm install && npm run dev
+```
+
+> **Option C Notes:** Uses 4-bit quantized model (~65% accuracy vs ~71% full precision). Memory usage: ~8-10GB vs ~32GB. Setup takes longer due to model quantization.
 
 > **Tips:** Backend logs are in `backend.log`. To stop: `pkill -f uvicorn` or `Ctrl+C` for frontend.
 

@@ -5,16 +5,21 @@ MLX-based inference pipeline with LoRA adapter support for Foundation-Sec-8B.
 This module provides Chain-of-Thought (CoT) reasoning capabilities using
 a fine-tuned LoRA adapter trained on security advisory labeling.
 
+Supports two modes:
+- Full precision (32GB+ RAM): Uses base model + LoRA adapter (~71% accuracy)
+- Low-RAM mode (16GB): Uses 4-bit quantized model (~65% accuracy)
+
 Usage:
     from mlx_inference import MLXPSIRTLabeler
 
-    labeler = MLXPSIRTLabeler()  # Uses MLX_ADAPTER_PATH by default
+    labeler = MLXPSIRTLabeler()  # Auto-detects mode from config
     result = labeler.predict_labels("SSH vulnerability...", "IOS-XE")
     print(result['reasoning'])
     print(result['predicted_labels'])
 """
 
 import json
+import os
 import re
 import yaml
 from pathlib import Path
@@ -28,6 +33,35 @@ import pandas as pd
 
 # Adapter path - matches registry.yaml and transformers_inference.py pattern
 MLX_ADAPTER_PATH = "models/adapters/mlx_v1"
+
+# Low-RAM mode paths
+LOWRAM_CONFIG_PATH = "models/lowram_config.json"
+QUANTIZED_MODEL_PATH = "models/foundation-sec-8b-4bit"
+
+
+def detect_lowram_mode() -> bool:
+    """
+    Detect if low-RAM mode should be used.
+
+    Checks (in order):
+    1. LOWRAM_MODE environment variable
+    2. Existence of lowram_config.json
+    3. Existence of quantized model directory
+    """
+    # Check env var first (explicit override)
+    if os.getenv("LOWRAM_MODE", "").lower() in ("true", "1", "yes"):
+        return True
+
+    # Check for config file (created by setup_mac_lowram.sh)
+    if Path(LOWRAM_CONFIG_PATH).exists():
+        return True
+
+    # Check if quantized model exists but full model doesn't
+    # (user only ran low-RAM setup)
+    if Path(QUANTIZED_MODEL_PATH).exists():
+        return True
+
+    return False
 
 # Import keyword-based label filtering
 import sys
@@ -98,13 +132,18 @@ def filter_overpredictions(predicted_labels: List[str], summary: str) -> List[st
 class MLXPSIRTLabeler:
     """
     PSIRT labeler using MLX with optional LoRA adapter for CoT reasoning.
+
+    Supports two modes:
+    - Full precision (32GB+ RAM): Base model + LoRA adapter (~71% accuracy)
+    - Low-RAM mode (16GB): 4-bit quantized model (~65% accuracy)
     """
 
     def __init__(
         self,
         model_id: str = "fdtn-ai/Foundation-Sec-8B",
         adapter_path: Optional[str] = MLX_ADAPTER_PATH,
-        use_cot: bool = True
+        use_cot: bool = True,
+        force_lowram: Optional[bool] = None
     ):
         """
         Initialize the MLX PSIRT Labeler.
@@ -113,21 +152,45 @@ class MLXPSIRTLabeler:
             model_id: HuggingFace model ID or local path
             adapter_path: Path to LoRA adapter (e.g., "adapters/pilot_cot_v1")
             use_cot: Whether to use Chain-of-Thought prompting
+            force_lowram: Override auto-detection (True=use quantized, False=use full)
         """
         print("🚀 Initializing MLX PSIRT Labeler...")
 
-        self.model_id = model_id
-        self.adapter_path = adapter_path
-        self.use_cot = use_cot
+        # Detect low-RAM mode
+        self.lowram_mode = force_lowram if force_lowram is not None else detect_lowram_mode()
 
-        # Load MLX model with optional adapter
-        print(f"\n📥 Loading model: {model_id}")
-        if adapter_path:
-            print(f"   🔧 With LoRA adapter: {adapter_path}")
-            self.model, self.tokenizer = load(model_id, adapter_path=adapter_path)
+        if self.lowram_mode:
+            # Low-RAM mode: use quantized model, no adapter
+            print("📉 Low-RAM mode detected (16GB Mac)")
+            print(f"   Using 4-bit quantized model for reduced memory usage")
+
+            if not Path(QUANTIZED_MODEL_PATH).exists():
+                raise FileNotFoundError(
+                    f"Quantized model not found at {QUANTIZED_MODEL_PATH}. "
+                    f"Run ./setup_mac_lowram.sh to create it."
+                )
+
+            self.model_id = QUANTIZED_MODEL_PATH
+            self.adapter_path = None  # Quantized models don't use adapters
+            self.use_cot = use_cot
+
+            print(f"\n📥 Loading quantized model: {QUANTIZED_MODEL_PATH}")
+            self.model, self.tokenizer = load(QUANTIZED_MODEL_PATH)
+            print("✅ Quantized model loaded (~65% accuracy, ~8GB RAM)")
+
         else:
-            self.model, self.tokenizer = load(model_id)
-        print("✅ Model loaded")
+            # Full precision mode: base model + adapter
+            self.model_id = model_id
+            self.adapter_path = adapter_path
+            self.use_cot = use_cot
+
+            print(f"\n📥 Loading model: {model_id}")
+            if adapter_path:
+                print(f"   🔧 With LoRA adapter: {adapter_path}")
+                self.model, self.tokenizer = load(model_id, adapter_path=adapter_path)
+            else:
+                self.model, self.tokenizer = load(model_id)
+            print("✅ Model loaded (~71% accuracy, ~32GB RAM)")
 
         # Load FAISS index and embedder for retrieval
         self._load_embedder_and_index()

@@ -148,7 +148,7 @@ See `docs/CHANGELOG_TERMINOLOGY_MIGRATION.md` for migration details.
 
 ## Quick Start
 
-### Mac (Apple Silicon M1/M2/M3 Ultra)
+### Mac (Apple Silicon - 32GB+ RAM)
 
 ```bash
 # One-time setup (~5 min)
@@ -161,6 +161,22 @@ nohup ./backend/run_server.sh > backend.log 2>&1 &
 # Start frontend
 cd frontend && npm install && npm run dev
 ```
+
+### Mac (Apple Silicon - 16GB RAM)
+
+```bash
+# One-time setup (~15 min, quantizes model to 4-bit)
+./setup_mac_lowram.sh
+
+# Start backend (background)
+source venv_mac/bin/activate
+nohup ./backend/run_server.sh > backend.log 2>&1 &
+
+# Start frontend
+cd frontend && npm install && npm run dev
+```
+
+> **16GB Note:** Uses 4-bit quantized model. ~65% accuracy (vs ~71%). Memory: ~8-10GB (vs ~32GB).
 
 ### Linux (NVIDIA GPU / CPU)
 
@@ -210,7 +226,7 @@ curl -X POST http://localhost:8000/api/v1/scan-device \
   - Tier 1 (Database): <10ms - Previously analyzed PSIRTs
   - Tier 2 (FAISS Exact): ~30ms - Advisory IDs in training data
   - Tier 3 (LLM Inference): ~2s - New PSIRTs
-- **Memory:** ~32 GB RAM (Mac/MLX), 13 GB VRAM (Linux/CUDA)
+- **Memory:** ~32 GB RAM (Mac/MLX full), ~8-10 GB (Mac/MLX 4-bit), 13 GB VRAM (Linux/CUDA)
 
 ### 2. Vulnerability Database
 - **File:** `vulnerability_db.sqlite`
@@ -350,6 +366,10 @@ ls -lh models/faiss_index.bin
 
 ## What's New (v4.5)
 
+- **Low-RAM Mac Support** - New Option C for 16GB Macs
+  - `setup_mac_lowram.sh` - Downloads and quantizes model to 4-bit
+  - ~65% accuracy (vs ~71% full precision), ~8-10GB RAM (vs ~32GB)
+  - Auto-detects mode via `models/lowram_config.json` or `LOWRAM_MODE` env var
 - **Distribution Ready** - Cleaned up repository for sharing
   - Removed `.claude/`, `archived/`, `future_architecture/` from version control
   - Redacted exposed Google API key from `docs/archive/SETUP_COMPLETE.md`
