@@ -226,7 +226,7 @@ curl -X POST http://localhost:8000/api/v1/scan-device \
   - Tier 1 (Database): <10ms - Previously analyzed PSIRTs
   - Tier 2 (FAISS Exact): ~30ms - Advisory IDs in training data
   - Tier 3 (LLM Inference): ~2s - New PSIRTs
-- **Memory:** ~32 GB RAM (Mac/MLX full), ~8-10 GB (Mac/MLX 4-bit), 13 GB VRAM (Linux/CUDA)
+- **Memory:** ~18 GB observed (Mac/MLX full, 32GB recommended), ~6 GB (Mac/MLX 4-bit), 13 GB VRAM (Linux/CUDA)
 
 ### 2. Vulnerability Database
 - **File:** `vulnerability_db.sqlite`
